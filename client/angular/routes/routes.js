@@ -1,0 +1,20 @@
+myApp.config(['$routeProvider',function($routeProvider){
+  $routeProvider
+  .when('/signUp',{
+    templateUrl:'../views/signUpPage.html',
+    controller:"signUpCtrl"
+  })
+  .when('/login',{
+    templateUrl:'../views/login.html',
+    controller:'loginCtrl'
+  })
+  .when('/dashboard',{
+    templateUrl:'../views/dashboard.html',
+    controller:'dashboardCtrl'
+  })
+  .when('/test/:id',{
+    templateUrl:'../views/test.html',
+    controller:'testCtrl'
+  })
+}])
+console.log('wdwed');

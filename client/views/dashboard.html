@@ -1,0 +1,13 @@
+<button type="button" ng-click=userchoice()> want to take test?</button>
+<button type="button" ng-show="showChoices" ng-click=listOfNewTests('low')> low</button>
+<button type="button" ng-show="showChoices" ng-click=listOfNewTests('medium')> medium</button>
+<button type="button" ng-show="showChoices" ng-click=listOfNewTests('high')> high</button>
+<ul >
+  <li ng-repeat="x in numberOfTests">{{x.title}}
+    <a href="#!test/{{x._id}}"><button type="button">Start</button></a>
+  </li>
+</ul>
+
+
+
+<button type="button" ng-click=testTaken()> tests taken and thier details</button>

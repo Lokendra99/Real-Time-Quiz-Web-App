@@ -1,0 +1,13 @@
+<h3>{{testData.testDescription}}</h3>
+<!-- <a href="#!testQuestions/{{testData._id}}"> -->
+  <button type="text" ng-click="displayQuestions()">Accept & Go ahead</button>
+  <div>
+    {{singleQuestionData.question}}
+    <div ng-repeat="option in singleQuestionData.options track by $index"  >
+      <input type="radio" ng-model="choiceCheck.setValue" value="{{$index+1}}"
+      name="whatever"/>{{option}}
+        {{choiceCheck.setValue}}
+    </div>
+  </div>
+
+  <button type="text" name="button" ng-click="pop()">Next</button>
