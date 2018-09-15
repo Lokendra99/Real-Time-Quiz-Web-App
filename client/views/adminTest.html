@@ -1,0 +1,11 @@
+<p>Title:{{testData.title}}</p>
+<p>Description:{{testData.testDescription}}</p>
+<p>Timelimit :{{testData.timelimit}}</p>
+<ul ng-repeat="question in testData.questions">
+  <li>{{question.question}}</li>
+  <ul ng-repeat="option in question.options">
+    <li>{{option}}</li>
+  </ul>
+</ul>
+<button type="button" name="button"><a href="#!updateTest/{{testData._id}}">Modify Test</a></button>
+<button type="button"><a href="#!deleteTest/{{testData._id}}">Delete test</a></button>

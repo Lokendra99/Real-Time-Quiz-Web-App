@@ -5,17 +5,29 @@ var User = mongoose.model('User');
 var Question = mongoose.model('Question');
 var Test = mongoose.model('Test');
 
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
 
 var responseGenerator = require('./../../libs/responsegenerator');
 var validator = require('./../../middleware/validate');
 
 var uniqid = require('uniqid');
 
+queryRouter.get('/check', function (req, res) {
+  res.send('hey sockets');
+});
 
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+});
 
 
 //for tests
-queryRouter.post('/createTest',function(req,res){
+queryRouter.post('/createTest',function(req,respond){
   var newTest=new Test({
     _id:uniqid(),
     title:req.body.title,
@@ -57,17 +69,22 @@ queryRouter.post('/createTest',function(req,res){
         })
         console.log(questionIdArray);
         newTest.questions=questionIdArray;
+
         newTest.save(function(err,result){
           if(err){console.log(err);}
           else{
             console.log('saved');
-            console.log(result);}
+            console.log(result);
+            respond.send(result);
+          }
+
         })
+
     })
 })
 
 queryRouter.get('/viewAllTests',function(req,res){
-  Test.find({},function(err,result){
+  Test.find({},{title:1},function(err,result){
     if(err)console.log(result);
     else{
       console.log(result);
@@ -109,14 +126,11 @@ queryRouter.get('/viewTest/:testId',function(req,res){
 
 
 queryRouter.post('/updateTest/:testId',function(req,res){
-  req.body.questions=req.body.questions.split(",");
   var update=req.body;
 
   Test.findOneAndUpdate({_id:req.params.testId},update,function(err,result){
     if(err)console.log(result);
     else{
-
-
        //check if it can be done through mongodb query
        var response = responseGenerator.generate(true , result , 200, null );
        res.send(response);
@@ -129,6 +143,8 @@ queryRouter.get('/deleteTest/:testId',function(req,res){
     if(err)console.log(result);
     else{
       console.log(result);
+      res.send(result);
+
     }
   })
 })

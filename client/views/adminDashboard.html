@@ -1,0 +1,16 @@
+<button type="button" ng-click="showme=true" ng-init="showme=false">Create Test</button>
+<form ng-show="showme">
+  Title:<input type="text" ng-model="title" ><br><br>
+  Test Description:<input type="text" ng-model="testDescription" ><br><br>
+  Time Limit:<input type="text" ng-model="timelimit"><br><br>
+  <select ng-model="difficulty">
+    <option>low</option>
+    <option>medium</option>
+    <option>high</option>
+  </select>
+  <input type="submit"  ng-click="sentRequest()" value="Submit"><br><br>
+</form>
+<button type="button" ng-click="getAllTests()">View Tests</button>
+  <ul ng-repeat="test in tests">
+    <li><a href="#!adminTest/{{test._id}}">{{test.title}}</a></li>
+  </ul>

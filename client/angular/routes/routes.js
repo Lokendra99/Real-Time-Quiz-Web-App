@@ -4,6 +4,10 @@ myApp.config(['$routeProvider',function($routeProvider){
     templateUrl:'../views/signUpPage.html',
     controller:"signUpCtrl"
   })
+  .when('/admin/dashboard',{
+    templateUrl:'../views/adminDashboard.html',
+    controller:'adminDashboardCtrl'
+  })
   .when('/login',{
     templateUrl:'../views/login.html',
     controller:'loginCtrl'
@@ -15,6 +19,19 @@ myApp.config(['$routeProvider',function($routeProvider){
   .when('/test/:id',{
     templateUrl:'../views/test.html',
     controller:'testCtrl'
+  })
+
+  .when('/adminTest/:id',{
+    templateUrl:'../views/adminTest.html',
+    controller:'adminTestCtrl'
+  })
+  .when('/updateTest/:id',{
+    templateUrl:'../views/updateTest.html',
+    controller:'updateTestCtrl'
+  })
+  .when('/deleteTest/:id',{
+    templateUrl:'../views/delete.html',
+    controller:'deleteTestCtrl'
   })
 }])
 console.log('wdwed');

@@ -13,6 +13,15 @@ app.use(bodyParser.urlencoded({limit:'10mb', extended: true}));
 app.use(morgan('dev'));
 app.use(cors());
 
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+
+
+
+
+
 app.use(express.static(__dirname + '/../client'));
 
 db = mongoose.connect('mongodb://localhost/quiz2');
@@ -33,7 +42,7 @@ app.use('/security', securityRouter);
 var queryRouter = require('./app/controllers/queryRouter');
 app.use('/queries' , queryRouter);
 
-app.listen(3000 , function(){
+server.listen(3000 , function(){
 
 	console.log("App running at localhost port 3000");
 });

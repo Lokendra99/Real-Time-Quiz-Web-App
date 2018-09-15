@@ -23,10 +23,11 @@ securityRouter.post('/login' ,validator.login, function(req , res){
 			res.json(err);
 		}else if(founduser===null || founduser===undefined || founduser.name===null || founduser.name===undefined){
 			var response = responseGenerator.generate(true , "No user found !! Check email" , 401, null );
-			res.json(response);
+			//res.json(response);
+			res.status(400).end("Must provide email and password");
 		}else if(!founduser.compareHash(req.body.pass)){
 			var response = responseGenerator.generate(true , "Wrong password" , 401, null );
-			res.json(response);
+			res.status(400).end("Wrong password");
 		}else{
 
 			//creating token for user to authenticate other requests
