@@ -1,33 +1,61 @@
 var express = require('express');
-var queryRouter = express.Router();
+var route = express.Router();
 var mongoose = require('mongoose');
+var user=require('../models/User');
 var User = mongoose.model('User');
 var Question = mongoose.model('Question');
 var Test = mongoose.model('Test');
+var Answer=mongoose.model('Answer');
+var socketIO=require('socket.io');
 
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
 
+module.exports.controller=function(app,server){
 
 var responseGenerator = require('./../../libs/responsegenerator');
 var validator = require('./../../middleware/validate');
 
 var uniqid = require('uniqid');
 
-queryRouter.get('/check', function (req, res) {
-  res.send('hey sockets');
-});
 
-io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
+var io=socketIO(server);
+
+
+
+ io.on('connection',function(socket){
+   var countdown = 10;
+   var totalTime=10;
+
+   console.log('connection of socket.io on server side');
+
+   socket.on('startTimer',function(time){
+
+  var myVar=setInterval(function() {
+       if(countdown===0){
+        stopFuncn();
+       }
+       else{
+         socket.emit('timer', { countdown: countdown });
+         countdown--;
+       }
+     }, 1000);
+
+     stopFuncn=function(){
+       socket.emit('stopTimer',{countdown:countdown});
+       clearInterval(myVar);
+     }
+   });
+
+   socket.on('timeTakenToAnswerEachQuestion',function(){
+     socket.emit('timeRecordedForEachQuestion',{timeTaken:totalTime-countdown});
+     totalTime=countdown;
+   })
+
   });
-});
+
 
 
 //for tests
-queryRouter.post('/createTest',function(req,respond){
+route.post('/createTest',function(req,respond){
   var newTest=new Test({
     _id:uniqid(),
     title:req.body.title,
@@ -77,13 +105,11 @@ queryRouter.post('/createTest',function(req,respond){
             console.log(result);
             respond.send(result);
           }
-
         })
-
     })
 })
 
-queryRouter.get('/viewAllTests',function(req,res){
+route.get('/viewAllTests',function(req,res){
   Test.find({},{title:1},function(err,result){
     if(err)console.log(result);
     else{
@@ -93,9 +119,9 @@ queryRouter.get('/viewAllTests',function(req,res){
     }
   })
 })
-queryRouter.get('/viewTestByCategory/:category',function(req,res){
-  console.log('category recieved '+ req.params.category);
-  Test.find({category:req.params.category},{title:1},function(err,result){
+route.get('/viewTestByDifficulty/:difficultyLevel',function(req,res){
+  console.log('difficultyLevel recieved '+ req.params.difficultyLevel);
+  Test.find({difficulty:req.params.difficultyLevel},{title:1},function(err,result){
     if(err)console.log(err);
     else{
       var response = responseGenerator.generate(true , result , 200, null );
@@ -104,7 +130,7 @@ queryRouter.get('/viewTestByCategory/:category',function(req,res){
   })
 })
 
-queryRouter.get('/viewTest/:testId',function(req,res){
+route.get('/viewTest/:testId',function(req,res){
   Test.findOne({_id:req.params.testId},function(err,result){
     if(err)console.log(result);
     else{
@@ -125,7 +151,7 @@ queryRouter.get('/viewTest/:testId',function(req,res){
 })
 
 
-queryRouter.post('/updateTest/:testId',function(req,res){
+route.post('/updateTest/:testId',function(req,res){
   var update=req.body;
 
   Test.findOneAndUpdate({_id:req.params.testId},update,function(err,result){
@@ -138,7 +164,7 @@ queryRouter.post('/updateTest/:testId',function(req,res){
   })
 })
 
-queryRouter.get('/deleteTest/:testId',function(req,res){
+route.get('/deleteTest/:testId',function(req,res){
   Test.remove({_id:req.params.testId},function(err,result){
     if(err)console.log(result);
     else{
@@ -150,7 +176,7 @@ queryRouter.get('/deleteTest/:testId',function(req,res){
 })
 
 //for Questions
-queryRouter.post('/question',function(req,res){
+route.post('/question',function(req,res){
 
   var question=new Question({
     _id:uniqid(),
@@ -172,7 +198,7 @@ queryRouter.post('/question',function(req,res){
   })
 })
 
-queryRouter.get('/viewAllQuestions/:category',function(req,res){
+route.get('/viewAllQuestions/:category',function(req,res){
   Question.find({category:req.params.category},function(err,result){
     if(err)console.log(result);
     else{
@@ -180,7 +206,7 @@ queryRouter.get('/viewAllQuestions/:category',function(req,res){
     }
   })
 })
-queryRouter.get('/viewQuestion/:questionId',function(req,res){
+route.get('/viewQuestion/:questionId',function(req,res){
   Question.find({_id:req.params.questionId},function(err,result){
     if(err)console.log(result);
     else{
@@ -188,7 +214,7 @@ queryRouter.get('/viewQuestion/:questionId',function(req,res){
     }
   })
 })
-queryRouter.post('/updateQuestion/:questionId',function(req,res){
+route.post('/updateQuestion/:questionId',function(req,res){
   var update=req.body;
   Question.findOneAndUpdate({_id:req.params.questionId},update,function(err,result){
     if(err)console.log(result);
@@ -197,7 +223,7 @@ queryRouter.post('/updateQuestion/:questionId',function(req,res){
     }
   })
 })
-queryRouter.get('/deleteQuestion/:questionId',function(req,res){
+route.get('/deleteQuestion/:questionId',function(req,res){
   Question.remove({_id:req.params.questionId},function(err,result){
     if(err)console.log(result);
     else{
@@ -205,4 +231,64 @@ queryRouter.get('/deleteQuestion/:questionId',function(req,res){
     }
   })
 })
-module.exports=queryRouter;
+//for answers
+route.post('/answer/:questionId',function(req,res){
+
+  var answer=new Answer({
+    _id:uniqid(),
+    questionId:req.body.questionId,
+    correctOption:req.body.correctOption,
+  })
+
+  answer.save(function(err,result){
+    if(err){
+      console.log(err);
+    }
+    else{
+      console.log(result);
+    }
+  })
+})
+
+
+route.post('/checkAnswer/:testId',function(req,res){
+  //console.log(req.params.testId);
+  var questionId=[];
+  var correctAnswerArr=req.body;
+  //console.log('req body ');
+  //console.log(req.body);
+
+  var count=null;
+
+  Test.findOne({_id:req.params.testId},function(err,result){
+    if(err){console.log(err);}
+    else{
+      //console.log(result);
+      //console.log(result.questions);
+      Answer.find({'questionId':{"$in":result.questions}},{_id:0},function(error,response){
+        if(err){console.log(err);}
+        else{
+          for( var i =0;i<response.length;i++){
+            var serverResponse=response[i];
+            var userResponse=correctAnswerArr[i];
+            if(serverResponse.questionId==userResponse.questionId){
+              if(serverResponse.correctOption==userResponse.correctOption){
+                count++;
+              }
+            }
+          }
+          var finalScore=count/response.length;
+          console.log('finalScore '+finalScore);
+        }
+
+      })
+    }
+  })
+  //correctAnswerArr.questionId.forEach(function(obj){obj})
+   console.log(correctAnswerArr);
+
+
+console.log('coming');
+})
+ app.use('/queries',route);
+}

@@ -38,6 +38,12 @@ var testSchema=new Schema({
   difficulty:{type: String , required: true, default:"" }
 })
 
+var answerSchema=new Schema({
+  _id:{type: String , required: true, default:"" },
+  questionId:{type: String , required: true, default:"" },
+  correctOption:{type: Number, required: true}
+})
+
 //method to generate hashed password
 userSchema.methods.generateHash = function(password){
     return bcrypt.hashSync(password , bcrypt.genSaltSync(8) ,null);
@@ -51,3 +57,4 @@ userSchema.methods.compareHash = function(password){
 mongoose.model('User' , userSchema);
 mongoose.model('Question' , questionSchema);
 mongoose.model('Test' , testSchema);
+mongoose.model('Answer',answerSchema);

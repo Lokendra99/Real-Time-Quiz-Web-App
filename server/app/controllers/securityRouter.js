@@ -1,5 +1,5 @@
 var express = require('express');
-var securityRouter = express.Router();
+var route = express.Router();
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
 var responseGenerator = require('./../../libs/responsegenerator');
@@ -11,8 +11,10 @@ var jwt = require('jsonwebtoken');
 //json secret key
 var jsonSecret = "ojdo&*%$&Yjnjc$DFG998bjb";
 
+module.exports.controller=function(app,server){
+
 //login route
-securityRouter.post('/login' ,validator.login, function(req , res){
+route.post('/login' ,validator.login, function(req , res){
     //search for entered emailid in db
 	User.findOne({email: req.body.email}, function(error , founduser){
 
@@ -47,7 +49,7 @@ securityRouter.post('/login' ,validator.login, function(req , res){
 });// end login route
 
 //signup route
-securityRouter.post('/signup', validator.signup, function(req , res){
+route.post('/signup', validator.signup, function(req , res){
 
 	//check if email id already exists
 	User.findOne({email: req.body.email} , function(error , founduser){
@@ -92,5 +94,7 @@ securityRouter.post('/signup', validator.signup, function(req , res){
 
 
 
-//export securityRouter
-module.exports = securityRouter;
+//export route
+ app.use('/security',route);
+
+}

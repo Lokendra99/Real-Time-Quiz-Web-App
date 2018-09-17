@@ -1,13 +1,16 @@
 <h3>{{testData.testDescription}}</h3>
 <!-- <a href="#!testQuestions/{{testData._id}}"> -->
-  <button type="text" ng-click="displayQuestions()">Accept & Go ahead</button>
+  <button type="text" ng-click="displayQuestions();startTimerFn()">Accept & Go ahead</button>
+  <p>time:{{timecheck}}</p>
   <div>
     {{singleQuestionData.question}}
     <div ng-repeat="option in singleQuestionData.options track by $index"  >
-      <input type="radio" ng-model="choiceCheck.setValue" value="{{$index+1}}"
+      <input type="radio" ng-model="choiceCheck.setValue" value="{{$index}}"
       name="whatever"/>{{option}}
         {{choiceCheck.setValue}}
     </div>
   </div>
 
-  <button type="text" name="button" ng-click="pop()">Next</button>
+  <button type="text" name="button"  ng-click="pop(singleQuestionData._id);
+  timerForEachAnswer()">Next</button>
+  <button type="text" name="button" ng-click="checkAnswer()">Submit</button>

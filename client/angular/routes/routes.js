@@ -21,6 +21,11 @@ myApp.config(['$routeProvider',function($routeProvider){
     controller:'testCtrl'
   })
 
+  .when('/results',{
+    templateUrl:'../views/result.html',
+    controller:'testCtrl'
+  })
+
   .when('/adminTest/:id',{
     templateUrl:'../views/adminTest.html',
     controller:'adminTestCtrl'

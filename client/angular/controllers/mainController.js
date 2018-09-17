@@ -1,5 +1,13 @@
 var myApp=angular.module('quiz',['ngRoute']);
 
+var socket=io();
+
+
+
+socket.on('connect',function(){
+  console.log('sockets in controller file');
+})
+
 
 myApp.controller('signUpCtrl',['$scope','$http','$location',function($scope,$http,$location){
 
@@ -69,9 +77,9 @@ myApp.controller('dashboardCtrl',['$scope','$http','$location',function($scope,$
     $scope.showChoices=1;
   }
 
- $scope.listOfNewTests=function(category){
+ $scope.listOfNewTests=function(difficultyLevel){
 
-   $http.get('http://localhost:3000/queries/viewTestByCategory/'+category)
+   $http.get('http://localhost:3000/queries/viewTestByDifficulty/'+difficultyLevel)
    .then(successCallback, errorCallback);
 
      function successCallback(response){
@@ -85,7 +93,8 @@ myApp.controller('dashboardCtrl',['$scope','$http','$location',function($scope,$
  }
 }])
 
-myApp.controller('testCtrl',['$scope','$http','$routeParams',function($scope,$http,$routeParams){
+myApp.controller('testCtrl',['$scope','$http','$routeParams','$location',
+function($scope,$http,$routeParams,$location){
 
   $scope.answerByUser=[];
   $scope.choiceCheck={
@@ -103,27 +112,75 @@ myApp.controller('testCtrl',['$scope','$http','$routeParams',function($scope,$ht
       console.log(response);
     }
     $scope.displayQuestions=function(){
-      $scope.questions=$scope.testData.questions;
 
+      $scope.questions=$scope.testData.questions;
       $scope.singleQuestionData=$scope.questions[0];
       console.log($scope.questions);
 
     }
+    $scope.startTimerFn=function(){
+      console.log('timer started');
+      socket.emit('startTimer',0);
+    }
+
+    socket.on('timeRecordedForEachQuestion',function(timeForAns){
+      console.log('timeTaken '+ timeForAns.timeTaken);
+    })
 
 
-    $scope.pop=function(){
+    socket.on('timer',function(data){
+      $scope.timecheck=data.countdown;
+      $scope.$apply();
+      console.log(data.countdown);
+    })
+
+      socket.on('stopTimer',function(arg){
+      $scope.timecheck=arg.countdown;
+      $scope.$apply();
+      console.log('timer stopped '+arg.countdown);
+      //$location.path('/results')
+    //  $scope.$apply();
+    })
+
+    $scope.pop=function(question_id){
       console.log($scope.choiceCheck.setValue);
-      $scope.answerByUser.push($scope.choiceCheck.setValue)
+      $scope.answerByUser.push({
+        questionId:question_id,
+        correctOption:$scope.choiceCheck.setValue
+      })
       console.log($scope.answerByUser);
 
       $scope.choiceCheck.setValue=null
       $scope.questions.shift();
       console.log($scope.questions);
       $scope.displayQuestions();
-
-
     }
-    console.log($scope.selectedOption);
+
+
+    $scope.timerForEachAnswer=function(){
+      //console.log('$scope.timecheck '+$scope.timecheck);
+      socket.emit('timeTakenToAnswerEachQuestion',{})
+    }
+
+    $scope.checkAnswer=function(){
+
+      var answerArr=$scope.answerByUser;
+      console.log(answerArr);
+
+      $http.post('http://localhost:3000/queries/checkAnswer/'+$routeParams.id, answerArr)
+      .then(successCallback, errorCallback);
+
+        function successCallback(response){
+          console.log(response);
+        }
+        function errorCallback(response){
+          console.log(response);
+
+        }
+    }
+
+
+  //  console.log($scope.selectedOption);
 }])
 
 myApp.controller('adminDashboardCtrl',['$scope','$http','$routeParams',
@@ -244,4 +301,11 @@ myApp.controller('updateTestCtrl',['$scope','$http','$routeParams','$location',
 
           }
       }
+}])
+
+
+myApp.controller('resultCtrl',['$scope','$http','$routeParams',
+  function($scope,$http,$routeParams){
+
+
 }])

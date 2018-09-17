@@ -13,16 +13,28 @@ app.use(bodyParser.urlencoded({limit:'10mb', extended: true}));
 app.use(morgan('dev'));
 app.use(cors());
 
-
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-
-
-
-
+var http=require('http');
+var server=http.createServer(app);
 
 
 app.use(express.static(__dirname + '/../client'));
+
+
+//for automation of getting  JS files from models and controllers
+fs.readdirSync('./app/controllers').forEach(function(file){
+  if(file.indexOf('.js')){
+    var route=require('./app/controllers/'+file);
+    route.controller(app,server);
+  }
+});
+
+fs.readdirSync('./app/models').forEach(function(file){
+  if(file.indexOf('.js')){
+    require('./app/models/'+file);
+  }
+});
+
+
 
 db = mongoose.connect('mongodb://localhost/quiz2');
 
@@ -34,13 +46,6 @@ mongoose.connection.once('open' , function(){
 
 mongoose.set('debug', true);
 
- var userModel = require('./app/models/User');
-
-var securityRouter = require('./app/controllers/securityRouter');
-app.use('/security', securityRouter);
-
-var queryRouter = require('./app/controllers/queryRouter');
-app.use('/queries' , queryRouter);
 
 server.listen(3000 , function(){
 
