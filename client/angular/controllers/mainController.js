@@ -1,4 +1,4 @@
-var myApp=angular.module('quiz',['ngRoute']);
+var myApp=angular.module('quiz',['ngRoute','satellizer']);
 
 var socket=io();
 
@@ -8,66 +8,141 @@ socket.on('connect',function(){
   console.log('sockets in controller file');
 })
 
+myApp.controller('ProfileCtrl', function($scope, $auth, Account){
+    //$scope.getProfile = function() {
+      Account.getProfile()
+        .then(function(response) {
+          $scope.user = response.data;
+          console.log(response);
+        })
+        .catch(function(response) {
+          console.log(response.data.message, response.status);
+        });
+    //};
+  });
 
-myApp.controller('signUpCtrl',['$scope','$http','$location',function($scope,$http,$location){
+myApp.controller('SignupCtrl',['$scope','$location','$auth',
+function($scope,$location,$auth){
+  console.log('coming here first');
+    $scope.signup = function() {
+      console.log('coming here');
+      $auth.signup($scope.user)
+        .then(function(response) {
+          $auth.setToken(response);
+          $location.path('/dashboard');
+          //toastr.info('You have successfully created a new account and have been signed-in');
+          console.log('You have successfully created a new account and have been signed-in');
+        })
+        .catch(function(response) {
+          //toastr.error(response.data.message);
+          console.log('response.data.message '+response.data.message);
+        });
+    };
+  }]);
 
- $scope.sentRequest=function(){
+ // $scope.sentRequest=function(){
+ //
+ //   var userSignUpData={
+ //    // name:$scope.userName,
+ //     email:$scope.userEmail,
+ //     //mobileNum:$scope.userMobilenumber,
+ //     password:$scope.userPassword
+ //   }
+ //
+ //   console.log(userSignUpData);
+ //
+ //   $http.post('http://localhost:3000/security/signup', userSignUpData)
+ //   .then(successCallback, errorCallback);
+ //
+ //     function successCallback(response){
+ //       console.log(response);
+ //        $location.path('/dashboard')
+ //     }
+ //     function errorCallback(response){
+ //       console.log(response);
+ //     }
+ // }
+//}])
 
-   var userSignUpData={
-     name:$scope.userName,
-     email:$scope.userEmail,
-     mobileNum:$scope.userMobilenumber,
-     pass:$scope.userPassword
-   }
+myApp.controller('LoginCtrl',['$scope','$location','$auth',
+function($scope,$location,$auth){
 
-   console.log(userSignUpData);
-   $http.post('http://localhost:3000/security/signup', userSignUpData)
-   .then(successCallback, errorCallback);
+   $scope.login = function() {
+     $auth.login($scope.user)
+       .then(function() {
+         //toastr.success('You have successfully signed in!');
+         console.log('You have successfully signed in!');
+         $location.path('/dashboard');
+       })
+       .catch(function(error) {
+         //toastr.error(error.data.message, error.status);
+         console.log(error);
+       });
+   };
+   $scope.authenticate = function(provider) {
+     $auth.authenticate(provider)
+       .then(function() {
+         //toastr.success('You have successfully signed in with ' + provider + '!');
+         console.log('You have successfully signed in with '+provider);
+         $location.path('/');
+       })
+       .catch(function(error) {
+         if (error.message) {
+           // Satellizer promise reject error.
+           //toastr.error(error.message);
+           console.log('error.message '+error.message);
+         } else if (error.data) {
+           // HTTP response error from server
+           //toastr.error(error.data.message, error.status);
+           console.log('error.data.message '+error.data.message);
+         } else {
+           //toastr.error(error);
+         }
+       });
+   };
+ }]);
 
-     function successCallback(response){
-       console.log(response);
-        $location.path('/dashboard')
-     }
-     function errorCallback(response){
-       console.log(response);
-     }
- }
-}])
-
-myApp.controller('loginCtrl',['$scope','$http','$location',function($scope,$http,$location){
-
- $scope.sentRequest=function(){
-
-   var loginData={
-     email:$scope.userEmail,
-     pass:$scope.userPassword
-   }
-
-
-   $http.post('http://localhost:3000/security/login', loginData)
-   .then(successCallback, errorCallback);
-
-     function successCallback(response){
-       console.log(response.data.data);
-       console.log($scope.UserName=response.data.data.name);
-       console.log($scope.email=response.data.data.email);
-       if($scope.UserName=='TheAdmin' && $scope.email=='Admin99@outlook.com'){
-         console.log('here it comes');
-         $location.path('/admin/dashboard');
-       }
-       else{
-         $location.path('/dashboard')
-       }
-
-     }
-     function errorCallback(response){
-       console.log(response);
-       $location.path('/')
-     }
- }
-}])
+ // $scope.sentRequest=function(){
+ //
+ //   var loginData={
+ //     email:$scope.userEmail,
+ //     pass:$scope.userPassword
+ //   }
+ //
+ //
+ //   $http.post('http://localhost:3000/security/login', loginData)
+ //   .then(successCallback, errorCallback);
+ //
+ //     function successCallback(response){
+ //       console.log(response.data.data);
+ //       console.log($scope.UserName=response.data.data.name);
+ //       console.log($scope.email=response.data.data.email);
+ //       if($scope.UserName=='TheAdmin' && $scope.email=='Admin99@outlook.com'){
+ //         console.log('here it comes');
+ //         $location.path('/admin/dashboard');
+ //       }
+ //       else{
+ //         $location.path('/dashboard')
+ //       }
+ //
+ //     }
+ //     function errorCallback(response){
+ //       console.log(response);
+ //       $location.path('/')
+ //     }
+ // }
+//}])
+myApp.controller('LogoutCtrl', ['$location', '$auth',function($location, $auth) {
+    if (!$auth.isAuthenticated()) { return; }
+    $auth.logout()
+      .then(function() {
+        console.log('You have been logged out');
+        $location.path('/');
+      });
+  }]);
 
 myApp.controller('dashboardCtrl',['$scope','$http','$location',function($scope,$http,$location){
+
 
   $scope.showChoices=0
   $scope.showDescription=0

@@ -1,20 +1,55 @@
-myApp.config(['$routeProvider',function($routeProvider){
+myApp.config(['$routeProvider','$authProvider',
+function($routeProvider,$authProvider){
+
+
+
+    var loginRequired = ['$q', '$location', '$auth', function($q, $location, $auth) {
+      var deferred = $q.defer();
+      if ($auth.isAuthenticated()) {
+        deferred.resolve();
+      } else {
+        $location.path('/login');
+      }
+      return deferred.promise;
+    }];
+
+
   $routeProvider
   .when('/signUp',{
     templateUrl:'../views/signUpPage.html',
-    controller:"signUpCtrl"
+    controller:'SignupCtrl',
+
   })
+  .when('/profile',{
+    templateUrl:'../views/profile.html',
+    controller:'ProfileCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
+  })
+
+  .when('/logout',{
+    templateUrl:'../views/logout.html',
+    controller:'LogoutCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
+  })
+
   .when('/admin/dashboard',{
     templateUrl:'../views/adminDashboard.html',
     controller:'adminDashboardCtrl'
   })
   .when('/login',{
     templateUrl:'../views/login.html',
-    controller:'loginCtrl'
+    controller:'LoginCtrl'
   })
   .when('/dashboard',{
     templateUrl:'../views/dashboard.html',
-    controller:'dashboardCtrl'
+    controller:'dashboardCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
   })
   .when('/test/:id',{
     templateUrl:'../views/test.html',
@@ -38,5 +73,19 @@ myApp.config(['$routeProvider',function($routeProvider){
     templateUrl:'../views/delete.html',
     controller:'deleteTestCtrl'
   })
+
+
+
+  $authProvider.google({
+      url: '/auth/google',
+      clientId: '173402901503-bttuemk945u2citejq1pr6rmqg410ak9.apps.googleusercontent.com',
+      redirectUri: 'http://localhost:3000/queries/googleDashboard'
+  });
+    $authProvider.facebook({
+        url: '/auth/facebook',
+        clientId: '193184427903099',
+        redirectUri: 'http://localhost:3000/facebook/dashboard',
+        //popupOptions: { width: 900, height: 700 }
+      });
 }])
 console.log('wdwed');

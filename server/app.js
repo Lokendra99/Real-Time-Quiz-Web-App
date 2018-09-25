@@ -4,10 +4,16 @@ var morgan = require('morgan');
 var path = require('path');
 var fs = require('fs');
 var mongoose = require('mongoose');
-var session = require('express-session');
+
 var cors = require('cors');
+var passport = require('passport');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+
 
 var app = express();
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({limit:'10mb', extended: true}));
 app.use(morgan('dev'));
@@ -24,7 +30,7 @@ app.use(express.static(__dirname + '/../client'));
 fs.readdirSync('./app/controllers').forEach(function(file){
   if(file.indexOf('.js')){
     var route=require('./app/controllers/'+file);
-    route.controller(app,server);
+    route.controller(app,server,passport);
   }
 });
 
@@ -45,6 +51,7 @@ mongoose.connection.once('open' , function(){
 });
 
 mongoose.set('debug', true);
+
 
 
 server.listen(3000 , function(){

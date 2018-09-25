@@ -7,19 +7,16 @@ var Question = mongoose.model('Question');
 var Test = mongoose.model('Test');
 var Answer=mongoose.model('Answer');
 var socketIO=require('socket.io');
-
-
-module.exports.controller=function(app,server){
-
 var responseGenerator = require('./../../libs/responsegenerator');
 var validator = require('./../../middleware/validate');
-
 var uniqid = require('uniqid');
 
 
+module.exports.controller=function(app,server,passport){
+
+
+
 var io=socketIO(server);
-
-
 
  io.on('connection',function(socket){
    var countdown = 10;
