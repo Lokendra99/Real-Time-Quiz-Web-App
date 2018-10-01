@@ -209,6 +209,26 @@ myApp.controller('dashboardCtrl',['$scope','$http','$location',function($scope,$
  }
 }])
 
+myApp.controller('questionsByAdminCtrl',['$scope','$http','$location',function($scope,$http,$location){
+
+
+ $scope.listOfAllQuestions=function(){
+
+   $http.get('http://localhost:3000/queries/viewAllQuestionsByAdmin')
+   .then(successCallback, errorCallback);
+
+     function successCallback(response){
+       console.log(response);
+       $scope.numberOfquestions=response.data.message
+
+     }
+     function errorCallback(response){
+       console.log(response);
+     }
+ }
+}])
+
+
 myApp.controller('testCtrl',['$scope','$http','$routeParams','$location',
 function($scope,$http,$routeParams,$location){
 
