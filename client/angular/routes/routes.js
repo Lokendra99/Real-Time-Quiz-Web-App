@@ -60,6 +60,10 @@ function($routeProvider,$authProvider){
     templateUrl:'../views/result.html',
     controller:'testCtrl'
   })
+    .when('/createTest',{
+    templateUrl:'../views/createTest.html',
+    controller:'createTestCtrl'
+  })
 
   .when('/adminTest/:id',{
     templateUrl:'../views/adminTest.html',
