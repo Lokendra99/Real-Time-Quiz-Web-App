@@ -55,6 +55,10 @@ function($routeProvider,$authProvider){
     templateUrl:'../views/test.html',
     controller:'testCtrl'
   })
+     .when('/allQuestions',{
+    templateUrl:'../views/questionsList.html',
+    controller:'questionsByAdminCtrl'
+  })
 
   .when('/results',{
     templateUrl:'../views/result.html',
