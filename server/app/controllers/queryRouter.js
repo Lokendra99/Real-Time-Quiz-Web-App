@@ -173,7 +173,7 @@ route.get('/deleteTest/:testId',function(req,res){
 })
 
 //for Questions
-route.post('/question',function(req,res){
+route.post('/createQuestion',function(req,res){
 
   var question=new Question({
     _id:uniqid(),
