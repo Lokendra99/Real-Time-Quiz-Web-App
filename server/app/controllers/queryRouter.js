@@ -203,6 +203,14 @@ route.get('/viewAllQuestions/:category',function(req,res){
     }
   })
 })
+route.get('/viewAllQuestionsByAdmin',function(req,res){
+  Question.find({},function(err,result){
+    if(err)console.log(result);
+    else{
+      console.log(result);
+    }
+  })
+})
 route.get('/viewQuestion/:questionId',function(req,res){
   Question.find({_id:req.params.questionId},function(err,result){
     if(err)console.log(result);
