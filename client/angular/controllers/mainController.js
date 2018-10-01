@@ -21,6 +21,47 @@ myApp.controller('ProfileCtrl', function($scope, $auth, Account){
     //};
   });
 
+myApp.controller('createTestCtrl',['$scope','$http','$routeParams',
+  function($scope,$http,$routeParams){
+
+    $scope.sentRequest=function(){
+
+      var questionData={
+        question:$scope.question,
+        adminOptions:$scope.adminOptions,
+        category:$scope.category,
+        difficulty:$scope.difficulty,
+      }
+      console.log(questionData);
+      $http.post('http://localhost:3000/queries/createQuestion', questionData)
+      .then(successCallback, errorCallback);
+
+        function successCallback(response){
+          console.log(response);
+        }
+        function errorCallback(response){
+          console.log(response);
+
+        }
+    }
+
+    $scope.getAllTests=function(){
+      $http.get('http://localhost:3000/queries/viewAllTests/')
+      .then(successCallback, errorCallback);
+
+        function successCallback(response){
+          console.log(response);
+          $scope.tests=response.data.message;
+
+        }
+        function errorCallback(response){
+          console.log(response);
+        }
+    }
+
+}])
+
+
 myApp.controller('SignupCtrl',['$scope','$location','$auth',
 function($scope,$location,$auth){
   console.log('coming here first');
