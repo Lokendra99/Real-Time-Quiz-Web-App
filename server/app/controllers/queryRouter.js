@@ -181,10 +181,10 @@ route.post('/createQuestion',function(req,res){
     category:req.body.category,
     difficulty:req.body.difficulty
   })
-  var options=req.body.options
-  options=options.split(",");
+  var adminOptions=req.body.adminOptions
+  adminOptions=adminOptions.split(",");
 
-  question.options=options;
+  question.options=adminOptions;
   question.save(function(err,result){
     if(err){
       console.log(err);
