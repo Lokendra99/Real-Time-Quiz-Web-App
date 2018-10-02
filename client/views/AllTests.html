@@ -1,0 +1,9 @@
+<div class="container set-margin">
+  <div ng-repeat="x in numberOfTests" class="list-group">
+    <li class="list-group-item clearfix">{{x.title}}
+      <a href="#!adminTest/{{x._id}}">
+        <button type="button" class="btn btn-danger pull-right"> View</button>
+      </a>
+      </li>
+  </div>
+</div>

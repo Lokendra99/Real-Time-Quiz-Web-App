@@ -5,28 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>index</title>
+  <link href="vendors/css/bootstrap.min.css" rel="stylesheet">
+  <link href="vendors/css/one-page-wonder.css" rel="stylesheet">
+  <link href="vendors/css/main.css" rel="stylesheet">
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-  <a href="#!signUp"><button type="button" name="button">sign up</button></a>
-  <a href="#!login"><button type="button" name="button">log in</button></a>
-  <ng-view></ng-view>
+
+
+  <!-- Navigation -->
+  <nav ng-show="navBarShow" ng-controller="indexCtrl" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" class="active" href="#">Start Bootstrap</a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <!-- <ul class="nav navbar-nav">
+                  <li>
+                      <a href="#about">About</a>
+                  </li>
+                  <li>
+                      <a href="#services">Services</a>
+                  </li>
+                  <li>
+                      <a href="#contact">Contact</a>
+                  </li>
+              </ul> -->
+              <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"><a href="#!signUp">Open Modal</a></button> -->
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="#!signUp"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="#!login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+              </ul>
+          </div>
+          <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container -->
+  </nav>
+  <div class="ng-view"></div>
+
+  <!-- <footer class="bg-4">
+    <div>
+      <h4 class="text-center">Web App By <a href="#">Lokendra Sharma</a></h4>
+    </div>
+
+  </footer> -->
 
 
 
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.2/angular-ui-router.min.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
-  <script
-    src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-    crossorigin="anonymous"></script>
+  <script src="/vendors/js/jquery.js"></script>
+  <script src="/vendors/js/bootstrap.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
 
-  <script src="angular/controllers/mainController.js"></script>
-  <script src="angular/routes/routes.js"></script>
-  <script src="socket/socket.js"></script>
-<script src="https://cdn.jsdelivr.net/satellizer/0.15.5/satellizer.min.js"></script>
-<script src="/angular/services/account.js"></script>
+  <script src="/angular/controllers/mainController.js"></script>
+  <script src="/angular/routes/routes.js"></script>
+  <script src="https://cdn.jsdelivr.net/satellizer/0.15.5/satellizer.min.js"></script>
+  <script src="/angular/services/account.js"></script>
+
+  <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+  <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+  <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+  <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+  <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+  <script src="https://www.amcharts.com/lib/3/pie.js"></script>
 
 
 </body>

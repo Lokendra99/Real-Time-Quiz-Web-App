@@ -15,6 +15,12 @@ function($routeProvider,$authProvider){
 
 
   $routeProvider
+  .when('/',{
+    templateUrl:'../views/home.html',
+    //controller:'homeCtrl',
+
+  })
+
   .when('/signUp',{
     templateUrl:'../views/signUpPage.html',
     controller:'SignupCtrl',
@@ -36,6 +42,15 @@ function($routeProvider,$authProvider){
         }
   })
 
+  .when('/forgotPasswrd',{
+    templateUrl:'../views/forgotPassword.html',
+    controller:'forgotPasswrdCtrl'
+  })
+  .when('/reset/:token',{
+    templateUrl:'../views/resetPassword.html',
+    controller:'resetPasswrdCtrl'
+  })
+
   .when('/admin/dashboard',{
     templateUrl:'../views/adminDashboard.html',
     controller:'adminDashboardCtrl'
@@ -44,14 +59,32 @@ function($routeProvider,$authProvider){
     templateUrl:'../views/login.html',
     controller:'LoginCtrl'
   })
-  .when('/dashboard',{
+  .when('/result/:userId/:testId',{
+    templateUrl:'../views/result.html',
+    controller:'resultCtrl'
+  })
+
+  .when('/testsReportForUser/:userId',{
+    templateUrl:'../views/testsReportForUser.html',
+    controller:'userTestsCtrl'
+  })
+  .when('/dashboard/:userId',{
     templateUrl:'../views/dashboard.html',
     controller:'dashboardCtrl',
     resolve: {
           loginRequired: loginRequired
         }
   })
-  .when('/test/:id',{
+  .when('/createTest',{
+    templateUrl:'../views/createTest.html',
+    controller:'createTestCtrl'
+  })
+
+  .when('/createQuestion',{
+    templateUrl:'../views/createQuestion.html',
+    controller:'createQuestionCtrl'
+  })
+  .when('/test/:userId/:id',{
     templateUrl:'../views/test.html',
     controller:'testCtrl'
   })
@@ -64,6 +97,21 @@ function($routeProvider,$authProvider){
   .when('/adminTest/:id',{
     templateUrl:'../views/adminTest.html',
     controller:'adminTestCtrl'
+  })
+  .when('/viewUsers',{
+    templateUrl:'../views/usersList.html',
+    controller:'adminUserCtrl'
+
+  })
+
+  .when('/viewAllTests',{
+    templateUrl:'../views/AllTests.html',
+    controller:'adminViewTestsCtrl'
+  })
+
+  .when('/viewAllQuestions/:id',{
+    templateUrl:'../views/AllQuestions.html',
+    controller:'adminViewQuestionsCtrl'
   })
   .when('/updateTest/:id',{
     templateUrl:'../views/updateTest.html',

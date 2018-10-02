@@ -1,13 +1,60 @@
-<button type="button" ng-click=userchoice()> want to take test?</button>
-<button type="button" ng-show="showChoices" ng-click=listOfNewTests('low')> low</button>
-<button type="button" ng-show="showChoices" ng-click=listOfNewTests('medium')> medium</button>
-<button type="button" ng-show="showChoices" ng-click=listOfNewTests('high')> high</button>
-<ul >
-  <li ng-repeat="x in numberOfTests">{{x.title}}
-    <a href="#!test/{{x._id}}"><button type="button">Start</button></a>
-  </li>
-</ul>
+
+<div class="dashboard-styling">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6" ng-hide="userOptsForTestReport">
+        <div class="">
+          <img src="http://nebulus.aitm.edu.in/wp-content/uploads/2016/03/General-Quiz.jpg" alt="" style="width:100%">
+          <div ng-hide="takeTestBtn" class="caption">
+            <button type="button" class="btn btn-block btn-primary" ng-click=userchoice()>
+               Take New Test
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" ng-hide="userOptsForTest">
+        <img src="https://capturly.com/blog/wp-content/uploads/2018/02/Data-Website-Analytics.gif" alt="" style="width:100%">
+        <div class="caption">
+          <a href="#!testsReportForUser/{{userId}}"><button type="button" class="btn btn-block btn-primary"> tests taken and thier details</button></a>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div ng-show="showChoices">
+          <h2>Choose your difficulty level</h2>
+          <button type="button" class="btn btn-block btn-warning" ng-click=listOfNewTests('low')> low</button>
+          <button type="button"  class="btn btn-block btn-success" ng-click=listOfNewTests('medium')> medium</button>
+          <button type="button"  class="btn btn-block btn-danger" ng-click=listOfNewTests('high')> high</button>
+        </div>
+      </div>
+        <div ng-show="showTestLinks" class="col-lg-6">
+          <h3>List of {{difficultyLevel}}level tests that you could take</h3>
+
+
+          <div ng-repeat="x in numberOfTests" class="list-group">
+
+            <li class="list-group-item clearfix">{{x.title}}
+              <a href="#!test/{{userId}}/{{x._id}}">
+                <button type="button" ng-show="testTakenByUser(x.testTakenByUser)"class="btn btn-danger pull-right"> Start</button>
+
+              </a>
+              <a href="#">
+                <button type="button" ng-hide="testTakenByUser(x.testTakenByUser)" class="btn btn-success pull-right">Already given,<br/>check performance</button>
+              </a>
+              </li>
+        </div>
+        </div>
+      </div>
+    </div>
 
 
 
-<button type="button" ng-click=testTaken()> tests taken and thier details</button>
+
+
+
+
+  </div>
+
+
+</div>

@@ -1,0 +1,135 @@
+.parent{
+margin: 10%;
+background-color: #ecf1f0;
+padding: 2%;
+
+}
+.left-image{
+  padding: 40px;
+  border-right: 2px solid #FF0000;
+  padding-right: 25px !important ;
+  box-shadow: 20px 20px 14px 4px #888888;
+}
+.panel{
+  margin-top: 10%;
+}
+
+.panel-default > .panel-heading {
+  font-size: 85%;
+  font-weight: bold;
+  color: #444;
+  text-transform: uppercase;
+  background-color: #f6f6f6;
+  border-color: #cfd9db;
+}
+.signup-or-separator {
+  position: relative;
+  height: 34px;
+  text-align: center;
+  background: none;
+}
+
+.signup-or-separator hr {
+  width: 90%;
+  margin: -16px auto 10px auto;
+  border-top: 1px solid #dce0e0;
+}
+
+.signup-or-separator .text {
+  display: inline-block;
+  padding: 8px;
+  margin: 0;
+  background-color: #fff;
+}
+
+.btn-google-plus {
+  color: #fff;
+  background-color: #dd4b39;
+  border: 1px solid #d54331;
+}
+.btn-google-plus:hover,
+.btn-google-plus:focus {
+  color: #fff;
+  background-color: #cb3927;
+}
+
+.btn-facebook {
+  color: #fff;
+  background-color: #3b5998;
+  border: 1px solid #335190;
+}
+
+.btn-facebook:hover,
+.btn-facebook:focus {
+  color: #fff;
+  background-color: #294786;
+}
+
+.dashboard-styling{
+  background-color: #f3eded; /* Green */
+  /* color: #ffffff; */
+  padding: 5%;
+}
+footer{
+  position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+  background-color: #2f2f2f; /* Black Gray */
+  color: #fff;
+  padding: 5%;
+}
+
+.instructions-styling{
+  line-height: 2.0;
+}
+.instruction-page-styling{
+  margin: 5%;
+border: 1px solid red;
+border-radius: 50px !important;
+background-color: #f1f1f1 !important;
+box-shadow: blueviolet;
+box-shadow: -20px 20px 3px 0px #ebd3d3;
+}
+.question-styling{
+  margin: 5%;
+  line-height: 1.6;
+}
+
+.set-margin{
+  margin-top: 5%;
+}
+
+.set-margin-adminTest{
+  margin: 5%;
+  padding: 5% !important;
+  border: 1px solid #efb4b4ab;
+  background-color: #fffdf4 !important;
+  box-shadow: 0 0 5px 5px #cecccc;
+}
+
+#chartdiv {
+  width: 100%;
+  height: 400px;
+}
+#chartdiv3 {
+	width		: 100%;
+	height		: 500px;
+	font-size	: 11px;
+}
+/* .amcharts-pie-slice {
+  transform: scale(1);
+  transform-origin: 50% 50%;
+  transition-duration: 0.3s;
+  transition: all .3s ease-out;
+  -webkit-transition: all .3s ease-out;
+  -moz-transition: all .3s ease-out;
+  -o-transition: all .3s ease-out;
+  cursor: pointer;
+  box-shadow: 0 0 30px 0 #000;
+}
+
+.amcharts-pie-slice:hover {
+  transform: scale(1.1);
+  filter: url(#shadow);
+}	 */

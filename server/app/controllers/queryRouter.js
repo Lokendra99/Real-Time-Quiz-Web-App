@@ -1,3 +1,4 @@
+var async = require('async');
 var express = require('express');
 var route = express.Router();
 var mongoose = require('mongoose');
@@ -10,6 +11,7 @@ var socketIO=require('socket.io');
 var responseGenerator = require('./../../libs/responsegenerator');
 var validator = require('./../../middleware/validate');
 var uniqid = require('uniqid');
+var PerformanceModel=mongoose.model('PerformanceModel');
 
 
 module.exports.controller=function(app,server,passport){
@@ -19,8 +21,8 @@ module.exports.controller=function(app,server,passport){
 var io=socketIO(server);
 
  io.on('connection',function(socket){
-   var countdown = 10;
-   var totalTime=10;
+   var countdown = 15;
+   var totalTime=15;
 
    console.log('connection of socket.io on server side');
 
@@ -42,12 +44,123 @@ var io=socketIO(server);
      }
    });
 
-   socket.on('timeTakenToAnswerEachQuestion',function(){
+   socket.on('timeTakenToAnswerEachQuestionAndOtherDetails',function(answerData){
+     answerData.timeTakenByEach=totalTime-countdown;
+     //async.waterfall()
+     Question.findOne({_id:answerData.questionId},function(err,result){
+       if(err)console.log(result);
+       else{
+         console.log(result);
+
+         correctOption=result.answer;
+         answerData.correctOption=correctOption;
+         console.log('try here');
+         console.log(answerData);
+         passValues(answerData);
+       }
+     })
+
+     passValues=function(answerData){
+
+       var newAnswerData=new Answer({
+         _id:uniqid(),
+         userId:answerData.userId,
+         questionId:answerData.questionId,
+         testId:answerData.testId,
+         correctOption:answerData.correctOption,
+         userOption:answerData.userOption,
+         timeTakenByEach:answerData.timeTakenByEach
+       });
+       console.log(newAnswerData);
+
+       newAnswerData.save(function(error,result){
+         console.log(result);
+         //res.send(result);
+       })
+     }
+
      socket.emit('timeRecordedForEachQuestion',{timeTaken:totalTime-countdown});
      totalTime=countdown;
    })
 
   });
+
+  route.get('/testResult/:userId/:testId',function(req,res){
+
+    var score=0;
+    var correctAnswer=0;
+    var wrongAnswer=0;
+    var timetoCompleteTest=0;
+
+    Answer.aggregate([
+
+      {$match:{userId:req.params.userId,testId:req.params.testId}}
+
+    ],function(request,result){
+
+      console.log('result');
+      console.log(result);
+      result.forEach(function(val,index,arr){
+        console.log('result.timeTakenByEach '+val.timeTakenByEach);
+        timetoCompleteTest=timetoCompleteTest+val.timeTakenByEach;
+        if(val.correctOption==val.userOption){
+          score++;
+          correctAnswer++;
+        }
+        else if(val.correctOption!=val.userOption){
+          console.log('wrong answer');
+          wrongAnswer++;
+        }
+      })
+
+      var performanceOfUser=new PerformanceModel({
+        userId:req.params.userId,
+      })
+      var object={testId:req.params.testId,
+      score:score,
+      totalCorrectAnswers:correctAnswer,
+      totalWrongAnswers:wrongAnswer,
+      timeTaken:timetoCompleteTest
+    }
+    var responseToBeSent={
+      score:score,
+      totalCorrectAnswers:correctAnswer,
+      totalWrongAnswers:wrongAnswer,
+      timeTaken:timetoCompleteTest
+    }
+    console.log('object');
+    console.log(object);
+
+      performanceOfUser.testsAttempted.push(object)
+      performanceOfUser.save(function(error,resultSaved){
+        console.log(resultSaved);
+      })
+      var addTestId=req.params.userId;
+      // var updateVal={
+      //   testTakenByUser:updateTestId
+      // }
+      Test.findOne({_id:req.params.testId},function(err,response){
+        response.testTakenByUser.push(addTestId);
+
+        Test.findOneAndUpdate({_id:response.id},response,function(err,resultbyHere){
+          //console.log(resultByhere);
+        })
+
+        // new Test().save(function(err,response){
+        //   console.log('response try');
+        //   console.log(response);
+        // })
+
+        console.log(response);
+
+      })
+      res.send(responseGenerator.generate(true , responseToBeSent , 200, null ));
+
+
+
+      //console.log('score '+score);
+    })
+  })
 
 
 
@@ -56,10 +169,18 @@ route.post('/createTest',function(req,respond){
   var newTest=new Test({
     _id:uniqid(),
     title:req.body.title,
-    testDescription:req.body.testDescription,
+    //testDescription:req.body.testDescription,
     timelimit:req.body.timelimit,
-    difficulty:req.body.difficulty
+    difficulty:req.body.difficulty,
+    totalScore:req.body.totalScore
   })
+  var DescriptionArr=req.body.testDescription;
+  //DescriptionArr.push(req.body.testDescription);
+  //console.log(DescriptionArr);
+DescriptionArr=DescriptionArr.split(',');
+console.log(DescriptionArr);
+    newTest.testDescription=DescriptionArr;
+
     var questionIdArray=[];
     Question.aggregate([
       {$match:{category:'verbal',difficulty:req.body.difficulty}},
@@ -116,9 +237,19 @@ route.get('/viewAllTests',function(req,res){
     }
   })
 })
+route.get('/viewAllUsers',function(req,res){
+  User.find({},{username:1},function(err,result){
+    if(err)console.log(result);
+    else{
+      console.log(result);
+      var response = responseGenerator.generate(true , result , 200, null );
+			res.send(response);
+    }
+  })
+})
 route.get('/viewTestByDifficulty/:difficultyLevel',function(req,res){
   console.log('difficultyLevel recieved '+ req.params.difficultyLevel);
-  Test.find({difficulty:req.params.difficultyLevel},{title:1},function(err,result){
+  Test.find({difficulty:req.params.difficultyLevel},{title:1,testTakenByUser:1},function(err,result){
     if(err)console.log(err);
     else{
       var response = responseGenerator.generate(true , result , 200, null );
@@ -131,7 +262,7 @@ route.get('/viewTest/:testId',function(req,res){
   Test.findOne({_id:req.params.testId},function(err,result){
     if(err)console.log(result);
     else{
-      Question.find({'_id':{"$in":result.questions}},{question:1,options:1},function(err,questions){
+      Question.find({'_id':{"$in":result.questions}},{question:1,options:1,answer:1},function(err,questions){
         if(err)console.log('err'+err);
         else{
           console.log(questions);
@@ -144,6 +275,13 @@ route.get('/viewTest/:testId',function(req,res){
       })
       console.log(result);
     }
+  })
+})
+
+
+route.get('/performanceOfUser/:userId',function(req,res){
+  PerformanceModel.find({userId:req.params.userId},{testsAttempted:1,_id:0},function(err,userTestsReport){
+    res.send(responseGenerator.generate(true , userTestsReport , 200, null ))
   })
 })
 
@@ -173,13 +311,15 @@ route.get('/deleteTest/:testId',function(req,res){
 })
 
 //for Questions
-route.post('/question',function(req,res){
+route.post('/createQuestion',function(req,res){
+
 
   var question=new Question({
     _id:uniqid(),
     question:req.body.question,
     category:req.body.category,
-    difficulty:req.body.difficulty
+    difficulty:req.body.difficulty,
+    answer:req.body.answer
   })
   var options=req.body.options
   options=options.split(",");
@@ -191,9 +331,21 @@ route.post('/question',function(req,res){
     }
     else{
       console.log(result);
+      res.send(responseGenerator.generate(true , result , 200, null ));
     }
   })
 })
+route.get('/viewAllQuestionsByAdmin',function(req,res){
+  Question.find({},function(err,result){
+    if(err)console.log(result);
+    else{
+      console.log(result);
+      res.send(responseGenerator.generate(true , result , 200, null ));
+    }
+  })
+})
+
+
 
 route.get('/viewAllQuestions/:category',function(req,res){
   Question.find({category:req.params.category},function(err,result){

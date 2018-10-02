@@ -1,0 +1,29 @@
+<div class="container set-margin">
+  <div class="row">
+    <div class="checkbox">
+      <label><input type="checkbox" ng-model="checkVal">low</label>
+    </div>
+    <div ng-repeat="question in numberOfQuestions" class="list-group">
+      <li class="list-group-item ">
+        <p class="pull-right">
+        Category:<strong>{{question.category}}</strong>
+        </p>
+
+
+        <strong>{{question.question}}</strong>
+        <ul ng-repeat="option in question.options">
+          <li>{{option}}</li>
+
+        </ul>
+        <p class="pull-right">
+          Difficuty:<strong>{{question.difficulty}}</strong>
+        </p>
+        Answer:<strong>{{question.options[question.answer]}}</strong>
+        <br/>
+        <br/>
+        <button type="button" class="btn btn-success " ng-click="modifyQuestion()">Modify</button>
+        <button type="button" class="btn btn-danger pull-right" ng-click="deleteQuestion()">Delete</button>
+        </li>
+    </div>
+  </div>
+</div>

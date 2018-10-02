@@ -1,11 +1,24 @@
-<p>Title:{{testData.title}}</p>
-<p>Description:{{testData.testDescription}}</p>
-<p>Timelimit :{{testData.timelimit}}</p>
-<ul ng-repeat="question in testData.questions">
-  <li>{{question.question}}</li>
-  <ul ng-repeat="option in question.options">
-    <li>{{option}}</li>
-  </ul>
-</ul>
-<button type="button" name="button"><a href="#!updateTest/{{testData._id}}">Modify Test</a></button>
-<button type="button"><a href="#!deleteTest/{{testData._id}}">Delete test</a></button>
+<div class="container set-margin-adminTest  jumbotron">
+  <h3 class="text-center"><u>{{testData.title}}</u></h3>
+  <div class="instructions-styling">
+    <h4>Instructions</h4>
+    <ul>
+      <li ng-repeat="instruction in testData.testDescription">{{instruction}}</li>
+    </ul>
+
+    <h5>Timelimit : {{testData.timelimit}} minutes</h5>
+    <h5>TotalScore : {{testData.timelimit}}</h5>
+    <h5>Questions : </h5>
+    <ul style="list-style-type:none" ng-repeat="question in testData.questions track by $index">
+      <li><strong>{{$index+1}}. {{question.question}}</li></strong>
+      <ul ng-repeat="option in question.options">
+        <li>{{option}}</li>
+      </ul>
+      Answer:<strong>{{question.options[question.answer]}}</strong>
+    </ul>
+  </div>
+
+  <a href="#!updateTest/{{testData._id}}"><button type="button" class="btn btn-success pull-left">Modify Test</button></a>
+
+  <a href="#!deleteTest/{{testData._id}}"><button type="button" class="btn btn-danger pull-right">Delete test</button></a>
+</div>

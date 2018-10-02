@@ -1,11 +1,18 @@
 var express = require('express');
+
+var async = require('async');
+var crypto = require('crypto');
+var nodemailer = require('nodemailer');
+var events = require('events');
 var route = express.Router();
 var mongoose = require('mongoose');
-var User = mongoose.model('User');
+var userModel = mongoose.model('User');
 var responseGenerator = require('./../../libs/responsegenerator');
 var validator = require('./../../middleware/validate');
 var moment = require('moment');
 var request = require('request');
+var qs = require('querystring');
+var eventEmitter = new events.EventEmitter();
 
 //jsonwebtoken for authentication
 var jwt = require('jwt-simple');
@@ -46,33 +53,87 @@ module.exports.controller=function(app,server){
   next();
 }
 
+//Cerate nodemailer to send welcome mail
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth :{
+        user: 'chatapp390@gmail.com',
+        pass: 'lokendra99'
+    }
+});
+
+eventEmitter.on('forgotPass', function(data){
+var mailOptions = {
+        to: data.email,
+        from: '"Authentication Team" <chatapp390@gmail.com>',
+        subject: '✔ Reset your password on QuizHub',
+        text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
+        'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+        'http://' + data.host + '/#!/reset/' + data.token + '\n\n' +
+        'Note: Reset Password Link will Expire in 1 Hour.<br>If you did not request this, please ignore this email and your password will remain unchanged.\n'
+      };
+      transporter.sendMail(mailOptions, function(err,info) {
+        if(err){
+                console.log(err);
+            }
+            else{
+                console.log(info);
+            }
+      });
+});
+
+eventEmitter.on('changePass', function(data){
+	console.log(data);
+      var mailOptions = {
+				to: data,
+        from: '"Authentication Team" <chatapp390@gmail.com>',
+        subject: 'Your quizHub password has been changed',
+        text: 'Hello,\n\n' +
+        'This is a confirmation that the password for your account ' + data + ' has just been changed.\n'
+      };
+      transporter.sendMail(mailOptions, function(err,info) {
+         if(err){
+                console.log(err);
+            }
+            else{
+                console.log(info);
+            }
+      });
+});
+
 
 
 	app.post('/auth/login', function(req, res) {
 		console.log(req.body);
 
-  User.findOne({ email: req.body.email }, '+password', function(err, user) {
+  userModel.findOne({ email: req.body.email }, function(err, user) {
     if (!user) {
       return res.status(401).send({ message: 'Invalid email and/or password' });
     }
+		else if(!user.password){
+			return res.status(401).send({ message: 'Invalid email and/or password' });
+		}
     else if(!user.compareHash(req.body.password)) {
         return res.status(401).send({ message: 'Invalid email and/or password' });
       }
-      res.send({ token: createJWT(user) });
+
+      res.send({
+				token: createJWT(user) ,
+				user:user
+			});
     });
   });
 
 //else if(!founduser.compareHash(req.body.pass))
 
 app.post('/auth/signup', function(req, res) {
-  User.findOne({ email: req.body.email }, function(err, existingUser) {
+  userModel.findOne({ email: req.body.email }, function(err, existingUser) {
     if (existingUser) {
       return res.status(409).send({ message: 'Email is already taken' });
     }
-    var user = new User({
-      displayName: req.body.displayName,
+    var user = new userModel({
+      username: req.body.displayName,
       email: req.body.email,
-      //password: req.body.password
     });
 		user.password = user.generateHash(req.body.password);
     user.save(function(err, result) {
@@ -81,13 +142,16 @@ app.post('/auth/signup', function(req, res) {
       }
 			console.log('result of signup');
 			console.log(result);
-      res.send({ token: createJWT(result) });
+      res.send({
+				token: createJWT(result),
+				user:result
+			 });
     });
   });
 });
 
 app.get('/api/me', ensureAuthenticated, function(req, res) {
-  User.findById(req.user, function(err, user) {
+  userModel.findById(req.user, function(err, user) {
     res.send(user);
   });
 });
@@ -115,47 +179,21 @@ app.post('/auth/google', function(req, res) {
       if (profile.error) {
         return res.status(500).send({message: profile.error.message});
       }
-      //Step 3a. Link user accounts.
-      // if (req.header('Authorization')) {
-      //   User.findOne({ google: profile.sub }, function(err, existingUser) {
-      //     if (existingUser) {
-      //       return res.status(409).send({ message: 'There is already a Google account that belongs to you' });
-      //     }
-			// 			console.log('result ');
-      //     var token = req.header('Authorization').split(' ')[1];
-      //     var payload = jwt.decode(token, jsonSecret);
-			// 		console.log(payload);
-      //     User.findById(payload.sub, function(err, user) {
-      //       if (!user) {
-      //         return res.status(400).send({ message: 'User not found' });
-      //       }
-			// 			console.log(profile);
-      //       //user.google = profile.sub;
-      //       //user.picture = user.picture || profile.picture.replace('sz=50', 'sz=200');
-      //       user.displayName =profile.name;
-			// 			user.email=profile.email;
-      //       user.save(function(err,result) {
-      //         var token = createJWT(user);
-			// 				console.log('user saved details');
-			// 				console.log(result);
-      //         res.send({ token: token });
-      //       });
-      //     });
-      //   });
-      // }
 			 else {
         // Step 3b. Create a new user account or return an existing one.
-        User.findOne({ email: profile.email}, function(err, existingUser) {
+        userModel.findOne({ email: profile.email}, function(err, existingUser) {
           if (existingUser) {
 						console.log('existing user');
             return res.send({ token: createJWT(existingUser) });
           }
 					console.log('new user');
-          var user = new User();
+          var user = new userModel();
           //user.google = profile.sub;
           //user.picture = profile.picture.replace('sz=50', 'sz=200');
-          user.displayName = profile.name;
-					user.email=profile.email;
+          user.username = user.username || profile.name;
+					user.email=user.email || profile.email;
+					user.google=profile.sub;
+
           user.save(function(err,result) {
             var token = createJWT(user);
 						console.log('result '+jsonSecret);
@@ -197,42 +235,20 @@ app.post('/auth/facebook', function(req, res) {
       if (response.statusCode !== 200) {
         return res.status(500).send({ message: profile.error.message });
       }
-      // if (req.header('Authorization')) {
-      //   User.findOne({ facebook: profile.id }, function(err, existingUser) {
-      //     if (existingUser) {
-      //       return res.status(409).send({ message: 'There is already a Facebook account that belongs to you' });
-      //     }
-      //     var token = req.header('Authorization').split(' ')[1];
-      //     var payload = jwt.decode(token, config.TOKEN_SECRET);
-      //     User.findById(payload.sub, function(err, user) {
-      //       if (!user) {
-      //         return res.status(400).send({ message: 'User not found' });
-      //       }
-      //       user.facebook = profile.id;
-      //       user.picture = user.picture || 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?type=large';
-      //       user.displayName = user.displayName || profile.name;
-      //       user.save(function() {
-      //         var token = createJWT(user);
-      //         res.send({ token: token });
-      //       });
-      //     });
-      //   });
-      // }
 			 else {
         // Step 3. Create a new user account or return an existing one.
-        User.findOne({ email: profile.email }, function(err, existingUser) {
+        userModel.findOne({ email: profile.email }, function(err, existingUser) {
           if (existingUser) {
 						console.log('existing user');
             var token = createJWT(existingUser);
             return res.send({ token: token });
           }
 					console.log('new user');
-          var user = new User();
-          // user.facebook = profile.id;
-          // user.picture = 'https://graph.facebook.com/' + profile.id + '/picture?type=large';
-          // user.displayName = profile.name;
-					user.displayName = profile.name;
+          var user = new userModel();
+					user.username = user.username||profile.name;
 					user.email=profile.email;
+					user.facebook=profile.id;
+
           user.save(function() {
             var token = createJWT(user);
 						console.log('saving');
@@ -246,7 +262,74 @@ app.post('/auth/facebook', function(req, res) {
 app.get('/facebook/dashboard',function(req,res){
 	res.send('reached here')
 })
-//export route
- //app.use('/security',route);
 
+ app.post('/forgotPassword',function(req,res){
+
+	 async.waterfall([
+    function(done) {
+      crypto.randomBytes(16, function(err, buf) {
+        var token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    function(token, done) {
+      userModel.findOne({ email: req.body.email }, function(err, user) {
+        if (!user) {
+          return res.status(400).send({ msg: 'The email address ' + req.body.email + ' is not associated with any account.' });
+        }
+        user.passwordResetToken = token;
+        user.passwordResetExpires = Date.now() + 3600000; // expire in 1 hour
+        var data = {
+          host: req.headers.host,
+          token: token,
+          email:user.email
+        };
+        user.save(function(err) {
+          eventEmitter.emit('forgotPass', data);
+					res.send({ user: user, msg: 'Send Email to your mail Id.' });
+          done(null);
+
+
+        });
+      });
+    }
+  ],function(err){
+		if(err){console.log(err);}
+		else{
+
+			console.log("success");
+		}
+	});
+ })
+
+ app.post('/resetpasword/:token',function(req,res){
+	 async.waterfall([
+    function(done) {
+      userModel.findOne({ passwordResetToken: req.params.token })
+        .where('passwordResetExpires').gt(Date.now())
+        .exec(function(err, user) {
+          if (!user) {
+            return res.status(400).send({ msg: 'Password reset token is invalid or has expired.' });
+          }
+          user.password = user.generateHash(req.body.password);
+
+          user.passwordResetToken = undefined;
+          user.passwordResetExpires = undefined;
+          var data = user.email;
+          user.save(function(err) {
+            eventEmitter.emit('changePass', data);
+						res.send({ user: user, msg: 'Password Reset Successfully.' });
+						done(null);
+
+          });
+        });
+    }
+  ],function(err){
+		if(err){console.log(err);}
+		else{
+
+			console.log("success here later");
+		};
+ })
+})
 }
