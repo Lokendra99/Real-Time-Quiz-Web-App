@@ -8,6 +8,7 @@ socket.on('connect', function() {
   console.log('sockets in controller file');
 })
 
+<<<<<<< HEAD
 myApp.controller('ProfileCtrl', function($scope, $auth, Account) {
   //$scope.getProfile = function() {
   Account.getProfile()
@@ -24,6 +25,65 @@ myApp.controller('ProfileCtrl', function($scope, $auth, Account) {
 myApp.controller('SignupCtrl', ['$scope', '$location', '$auth',
   function($scope, $location, $auth) {
     console.log('coming here first');
+=======
+myApp.controller('ProfileCtrl', function($scope, $auth, Account){
+    //$scope.getProfile = function() {
+      Account.getProfile()
+        .then(function(response) {
+          $scope.user = response.data;
+          console.log(response);
+        })
+        .catch(function(response) {
+          console.log(response.data.message, response.status);
+        });
+    //};
+  });
+
+myApp.controller('createTestCtrl',['$scope','$http','$routeParams',
+  function($scope,$http,$routeParams){
+
+    $scope.sentRequest=function(){
+
+      var questionData={
+        question:$scope.question,
+        adminOptions:$scope.adminOptions,
+        category:$scope.category,
+        difficulty:$scope.difficulty,
+      }
+      console.log(questionData);
+      $http.post('http://localhost:3000/queries/createQuestion', questionData)
+      .then(successCallback, errorCallback);
+
+        function successCallback(response){
+          console.log(response);
+        }
+        function errorCallback(response){
+          console.log(response);
+
+        }
+    }
+
+    $scope.getAllTests=function(){
+      $http.get('http://localhost:3000/queries/viewAllTests/')
+      .then(successCallback, errorCallback);
+
+        function successCallback(response){
+          console.log(response);
+          $scope.tests=response.data.message;
+
+        }
+        function errorCallback(response){
+          console.log(response);
+        }
+    }
+
+}])
+
+
+myApp.controller('SignupCtrl',['$scope','$location','$auth',
+function($scope,$location,$auth){
+  console.log('coming here first');
+>>>>>>> b5981e83bc2a97d4a4a28c1275dc8cabd84f99dc
     $scope.signup = function() {
       console.log('coming here');
       $auth.signup($scope.user)
@@ -328,12 +388,37 @@ myApp.controller('userTestsCtrl', ['$scope', '$http', '$location','$routeParams'
 
 }])
 
+<<<<<<< HEAD
 myApp.controller('dashboardCtrl', ['$scope', '$http', '$location','$routeParams', function($scope, $http, $location,$routeParams) {
 
   $scope.userId=$routeParams.userId;
   console.log($scope.userId);
   $scope.userOptsForTestReport=0;
 
+=======
+myApp.controller('questionsByAdminCtrl',['$scope','$http','$location',function($scope,$http,$location){
+
+
+ $scope.listOfAllQuestions=function(){
+
+   $http.get('http://localhost:3000/queries/viewAllQuestionsByAdmin')
+   .then(successCallback, errorCallback);
+
+     function successCallback(response){
+       console.log(response);
+       $scope.numberOfquestions=response.data.message
+
+     }
+     function errorCallback(response){
+       console.log(response);
+     }
+ }
+}])
+
+
+myApp.controller('testCtrl',['$scope','$http','$routeParams','$location',
+function($scope,$http,$routeParams,$location){
+>>>>>>> b5981e83bc2a97d4a4a28c1275dc8cabd84f99dc
 
 
   $scope.testTakenByUser=function(testGivenByUsers){

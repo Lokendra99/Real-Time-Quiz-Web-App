@@ -88,10 +88,18 @@ function($routeProvider,$authProvider){
     templateUrl:'../views/test.html',
     controller:'testCtrl'
   })
+     .when('/allQuestions',{
+    templateUrl:'../views/questionsList.html',
+    controller:'questionsByAdminCtrl'
+  })
 
   .when('/results',{
     templateUrl:'../views/result.html',
     controller:'testCtrl'
+  })
+    .when('/createTest',{
+    templateUrl:'../views/createTest.html',
+    controller:'createTestCtrl'
   })
 
   .when('/adminTest/:id',{

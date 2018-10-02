@@ -312,7 +312,10 @@ route.get('/deleteTest/:testId',function(req,res){
 
 //for Questions
 route.post('/createQuestion',function(req,res){
+<<<<<<< HEAD
 
+=======
+>>>>>>> b5981e83bc2a97d4a4a28c1275dc8cabd84f99dc
 
   var question=new Question({
     _id:uniqid(),
@@ -321,10 +324,10 @@ route.post('/createQuestion',function(req,res){
     difficulty:req.body.difficulty,
     answer:req.body.answer
   })
-  var options=req.body.options
-  options=options.split(",");
+  var adminOptions=req.body.adminOptions
+  adminOptions=adminOptions.split(",");
 
-  question.options=options;
+  question.options=adminOptions;
   question.save(function(err,result){
     if(err){
       console.log(err);
@@ -349,6 +352,14 @@ route.get('/viewAllQuestionsByAdmin',function(req,res){
 
 route.get('/viewAllQuestions/:category',function(req,res){
   Question.find({category:req.params.category},function(err,result){
+    if(err)console.log(result);
+    else{
+      console.log(result);
+    }
+  })
+})
+route.get('/viewAllQuestionsByAdmin',function(req,res){
+  Question.find({},function(err,result){
     if(err)console.log(result);
     else{
       console.log(result);
