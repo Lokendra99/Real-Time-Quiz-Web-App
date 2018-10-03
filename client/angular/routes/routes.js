@@ -26,6 +26,12 @@ function($routeProvider,$authProvider){
     controller:'SignupCtrl',
 
   })
+    
+    .when('/overAllUserPerformanceForAdmin/:userId',{
+    templateUrl:'../views/overAllUserPerformance.html',
+    controller:'performanceCtrlForAdmin',
+
+  })
   .when('/profile',{
     templateUrl:'../views/profile.html',
     controller:'ProfileCtrl',
