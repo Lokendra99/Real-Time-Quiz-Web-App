@@ -229,7 +229,7 @@ console.log(DescriptionArr);
 
 route.get('/viewAllTests',function(req,res){
   Test.find({},{title:1},function(err,result){
-    if(err)console.log(err);
+    if(err)console.log(result);
     else{
       console.log(result);
       var response = responseGenerator.generate(true , result , 200, null );
@@ -237,30 +237,9 @@ route.get('/viewAllTests',function(req,res){
     }
   })
 })
-route.get('/overAllPerformanceOfUser/:userId',function(req,res){
-  PerformanceModel.find({userId:req.params.userId},function(err,result){
-    if(err)console.log(err);
-    else{
-      console.log(result);
-      var response = responseGenerator.generate(true , result , 200, null );
-		res.send(response);
-    }
-  })
-})
-route.get('/testSpecificPerformanceForAdmin/:userId/:testId',function(req,res){
-	 Answer.aggregate([
-
-      {$match:{userId:req.params.userId,testId:req.params.testId}}
-
-    ],function(request,result){
-	 })
-	res.send(result);
-})
-	
-	
 route.get('/viewAllUsers',function(req,res){
   User.find({},{username:1},function(err,result){
-    if(err)console.log(err);
+    if(err)console.log(result);
     else{
       console.log(result);
       var response = responseGenerator.generate(true , result , 200, null );
@@ -281,7 +260,7 @@ route.get('/viewTestByDifficulty/:difficultyLevel',function(req,res){
 
 route.get('/viewTest/:testId',function(req,res){
   Test.findOne({_id:req.params.testId},function(err,result){
-    if(err)console.log(err);
+    if(err)console.log(result);
     else{
       Question.find({'_id':{"$in":result.questions}},{question:1,options:1,answer:1},function(err,questions){
         if(err)console.log('err'+err);
@@ -311,7 +290,7 @@ route.post('/updateTest/:testId',function(req,res){
   var update=req.body;
 
   Test.findOneAndUpdate({_id:req.params.testId},update,function(err,result){
-    if(err)console.log(err);
+    if(err)console.log(result);
     else{
        //check if it can be done through mongodb query
        var response = responseGenerator.generate(true , result , 200, null );
@@ -322,7 +301,7 @@ route.post('/updateTest/:testId',function(req,res){
 
 route.get('/deleteTest/:testId',function(req,res){
   Test.remove({_id:req.params.testId},function(err,result){
-    if(err)console.log(err);
+    if(err)console.log(result);
     else{
       console.log(result);
       res.send(result);
@@ -333,10 +312,7 @@ route.get('/deleteTest/:testId',function(req,res){
 
 //for Questions
 route.post('/createQuestion',function(req,res){
-<<<<<<< HEAD
 
-=======
->>>>>>> b5981e83bc2a97d4a4a28c1275dc8cabd84f99dc
 
   var question=new Question({
     _id:uniqid(),
@@ -345,10 +321,10 @@ route.post('/createQuestion',function(req,res){
     difficulty:req.body.difficulty,
     answer:req.body.answer
   })
-  var adminOptions=req.body.adminOptions
-  adminOptions=adminOptions.split(",");
+  var options=req.body.options
+  options=options.split(",");
 
-  question.options=adminOptions;
+  question.options=options;
   question.save(function(err,result){
     if(err){
       console.log(err);
@@ -373,14 +349,6 @@ route.get('/viewAllQuestionsByAdmin',function(req,res){
 
 route.get('/viewAllQuestions/:category',function(req,res){
   Question.find({category:req.params.category},function(err,result){
-    if(err)console.log(result);
-    else{
-      console.log(result);
-    }
-  })
-})
-route.get('/viewAllQuestionsByAdmin',function(req,res){
-  Question.find({},function(err,result){
     if(err)console.log(result);
     else{
       console.log(result);
@@ -470,6 +438,26 @@ route.post('/checkAnswer/:testId',function(req,res){
 
 
 console.log('coming');
+})
+
+route.get('/overAllPerformanceOfUser/:userId',function(req,res){
+  PerformanceModel.find({userId:req.params.userId},function(err,result){
+    if(err)console.log(err);
+    else{
+      console.log(result);
+      var response = responseGenerator.generate(true , result , 200, null );
+		res.send(response);
+    }
+  })
+})
+route.get('/testSpecificPerformanceForAdmin/:userId/:testId',function(req,res){
+	 Answer.aggregate([
+
+      {$match:{userId:req.params.userId,testId:req.params.testId}}
+
+    ],function(request,result){
+	 })
+	res.send(result);
 })
  app.use('/queries',route);
 }

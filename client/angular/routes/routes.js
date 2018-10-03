@@ -26,12 +26,6 @@ function($routeProvider,$authProvider){
     controller:'SignupCtrl',
 
   })
-    
-    .when('/overAllUserPerformanceForAdmin/:userId',{
-    templateUrl:'../views/overAllUserPerformance.html',
-    controller:'performanceCtrlForAdmin',
-
-  })
   .when('/profile',{
     templateUrl:'../views/profile.html',
     controller:'ProfileCtrl',
@@ -94,18 +88,10 @@ function($routeProvider,$authProvider){
     templateUrl:'../views/test.html',
     controller:'testCtrl'
   })
-     .when('/allQuestions',{
-    templateUrl:'../views/questionsList.html',
-    controller:'questionsByAdminCtrl'
-  })
 
   .when('/results',{
     templateUrl:'../views/result.html',
     controller:'testCtrl'
-  })
-    .when('/createTest',{
-    templateUrl:'../views/createTest.html',
-    controller:'createTestCtrl'
   })
 
   .when('/adminTest/:id',{
@@ -135,6 +121,10 @@ function($routeProvider,$authProvider){
     templateUrl:'../views/delete.html',
     controller:'deleteTestCtrl'
   })
+  .when('/overAllUserPerformanceForAdmin/:userId',{
+  templateUrl:'../views/overAllUserPerformance.html',
+  controller:'performanceCtrlForAdmin',
+})
 
 
 
