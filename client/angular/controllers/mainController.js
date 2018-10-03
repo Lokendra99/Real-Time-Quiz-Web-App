@@ -490,7 +490,21 @@ myApp.controller('adminViewTestsCtrl', ['$scope','$http', function($scope,$http)
     console.log(response);
   }
 }])
+	
+myApp.controller('performanceCtrlForAdmin', ['$scope','$routeParams','$http', function($scope,$routeParams,$http) {
 
+  $http.get('http://localhost:3000/queries/overAllPerformanceOfUser/'+$routeParams.userId)
+    .then(successCallback, errorCallback);
+
+  function successCallback(response) {
+    console.log(response);
+    $scope.numberOfTests = response.data.message
+  }
+
+  function errorCallback(response) {
+    console.log(response);
+  }
+}])
 
 myApp.controller('adminViewQuestionsCtrl', ['$scope','$http','$routeParams',
 function($scope,$http,$routeParams) {
