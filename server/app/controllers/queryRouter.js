@@ -247,6 +247,16 @@ route.get('/overAllPerformanceOfUser/:userId',function(req,res){
     }
   })
 })
+route.get('/testSpecificPerformanceForAdmin/:userId/:testId',function(req,res){
+	 Answer.aggregate([
+
+      {$match:{userId:req.params.userId,testId:req.params.testId}}
+
+    ],function(request,result){
+	 })
+	res.send(result);
+})
+	
 	
 route.get('/viewAllUsers',function(req,res){
   User.find({},{username:1},function(err,result){
