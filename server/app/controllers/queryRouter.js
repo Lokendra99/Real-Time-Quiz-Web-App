@@ -229,7 +229,7 @@ console.log(DescriptionArr);
 
 route.get('/viewAllTests',function(req,res){
   Test.find({},{title:1},function(err,result){
-    if(err)console.log(result);
+    if(err)console.log(err);
     else{
       console.log(result);
       var response = responseGenerator.generate(true , result , 200, null );
@@ -237,9 +237,20 @@ route.get('/viewAllTests',function(req,res){
     }
   })
 })
+route.get('/overAllPerformanceOfUser/:userId',function(req,res){
+  PerformanceModel.find({userId:req.params.userId},function(err,result){
+    if(err)console.log(err);
+    else{
+      console.log(result);
+      var response = responseGenerator.generate(true , result , 200, null );
+		res.send(response);
+    }
+  })
+})
+	
 route.get('/viewAllUsers',function(req,res){
   User.find({},{username:1},function(err,result){
-    if(err)console.log(result);
+    if(err)console.log(err);
     else{
       console.log(result);
       var response = responseGenerator.generate(true , result , 200, null );
@@ -260,7 +271,7 @@ route.get('/viewTestByDifficulty/:difficultyLevel',function(req,res){
 
 route.get('/viewTest/:testId',function(req,res){
   Test.findOne({_id:req.params.testId},function(err,result){
-    if(err)console.log(result);
+    if(err)console.log(err);
     else{
       Question.find({'_id':{"$in":result.questions}},{question:1,options:1,answer:1},function(err,questions){
         if(err)console.log('err'+err);
@@ -290,7 +301,7 @@ route.post('/updateTest/:testId',function(req,res){
   var update=req.body;
 
   Test.findOneAndUpdate({_id:req.params.testId},update,function(err,result){
-    if(err)console.log(result);
+    if(err)console.log(err);
     else{
        //check if it can be done through mongodb query
        var response = responseGenerator.generate(true , result , 200, null );
@@ -301,7 +312,7 @@ route.post('/updateTest/:testId',function(req,res){
 
 route.get('/deleteTest/:testId',function(req,res){
   Test.remove({_id:req.params.testId},function(err,result){
-    if(err)console.log(result);
+    if(err)console.log(err);
     else{
       console.log(result);
       res.send(result);
