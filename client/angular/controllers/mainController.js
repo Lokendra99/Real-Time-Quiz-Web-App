@@ -498,12 +498,25 @@ myApp.controller('performanceCtrlForAdmin', ['$scope','$routeParams','$http', fu
 
   function successCallback(response) {
     console.log(response);
-    $scope.numberOfTests = response.data.message
+    $scope.testsPerformanceForUser = response.data.message
   }
 
   function errorCallback(response) {
     console.log(response);
   }
+$scope.getUserTestSpecificDetails=function(testId){
+	 $http.get('http://localhost:3000/queries/testSpecificPerformanceForAdmin/'+$routeParams.userId+'/'+testId)
+	    .then(successCallback, errorCallback);
+
+	  function successCallback(response) {
+	    console.log(response);
+	    $scope.testSpecificPerformanceForUser = response.data.message
+	  }
+
+	  function errorCallback(response) {
+	    console.log(response);
+	  }	
+}
 }])
 
 myApp.controller('adminViewQuestionsCtrl', ['$scope','$http','$routeParams',
