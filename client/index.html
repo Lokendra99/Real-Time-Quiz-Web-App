@@ -24,40 +24,31 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
               </button>
-              <a class="navbar-brand" class="active" href="#">Start Bootstrap</a>
+              <a class="navbar-brand active" href="#"><p class="font-change">QuizHub</p></a>
           </div>
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-              <!-- <ul class="nav navbar-nav">
-                  <li>
-                      <a href="#about">About</a>
-                  </li>
-                  <li>
-                      <a href="#services">Services</a>
-                  </li>
-                  <li>
-                      <a href="#contact">Contact</a>
-                  </li>
-              </ul> -->
-              <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"><a href="#!signUp">Open Modal</a></button> -->
-              <ul class="nav navbar-nav navbar-right">
-                <li><a href="#!signUp"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="#!login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+
+              <ul class="font-change nav navbar-nav navbar-right">
+                <li ng-show="userLogged"><a  href="#!signUp"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li ng-show="userLogged"><a href="#!login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                  <li class ="active"><a href=""><strong>{{userPresentName}}</strong></a></li>
+                                  <li ng-hide="userLogged"><a href="#!logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
               </ul>
           </div>
           <!-- /.navbar-collapse -->
       </div>
       <!-- /.container -->
   </nav>
-  <div class="ng-view"></div>
+  <div id="wrapper">
+  <div id="content" class="ng-view"></div>
+  <footer id="footer">
+  <div >
+    <h4 class="text-center">Web App By <a href="#">Lokendra Sharma</a></h4>
+  </div>
+</div>
 
-  <!-- <footer class="bg-4">
-    <div>
-      <h4 class="text-center">Web App By <a href="#">Lokendra Sharma</a></h4>
-    </div>
-
-  </footer> -->
-
+</footer>
 
 
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
@@ -68,9 +59,35 @@
   <script src="/socket.io/socket.io.js"></script>
 
   <script src="/angular/controllers/mainController.js"></script>
+  <script src="/angular/controllers/adminDashboardCtrl.js"></script>
+  <script src="/angular/controllers/adminTestCtrl.js"></script>
+  <script src="/angular/controllers/adminUserCtrl.js"></script>
+  <script src="/angular/controllers/adminViewQuestionsCtrl.js"></script>
+  <script src="/angular/controllers/adminViewTestCtrl.js"></script>
+  <script src="/angular/controllers/createQuestionCtrl.js"></script>
+  <script src="/angular/controllers/dashboardCtrl.js"></script>
+  <script src="/angular/controllers/deleteTestCtrl.js"></script>
+  <script src="/angular/controllers/forgotPasswordCtrl.js"></script>
+  <script src="/angular/controllers/indexCtrl.js"></script>
+  <script src="/angular/controllers/loginCtrl.js"></script>
+  <script src="/angular/controllers/logoutCtrl.js"></script>
+  <script src="/angular/controllers/performanceCtrlForAdmin.js"></script>
+  <script src="/angular/controllers/resultCtrl.js"></script>
+  <script src="/angular/controllers/signupCtrl.js"></script>
+  <script src="/angular/controllers/testCtrl.js"></script>
+  <script src="/angular/controllers/updateQuestionCtrl.js"></script>
+  <script src="/angular/controllers/updateTestCtrl.js"></script>
+  <script src="/angular/controllers/userTestsCtrl.js"></script>
+  <script src="/angular/controllers/createTestCtrl.js"></script>
+
+
   <script src="/angular/routes/routes.js"></script>
   <script src="https://cdn.jsdelivr.net/satellizer/0.15.5/satellizer.min.js"></script>
   <script src="/angular/services/account.js"></script>
+  <script src="/angular/services/navbarDiv.js"></script>
+  <script src="/angular/services/showUserLoggedIn.js"></script>
+  <script src="/angular/services/userclickedforReload.js"></script>
+  <script src="/angular/services/userDetails.js"></script>
 
   <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
   <script src="https://www.amcharts.com/lib/3/serial.js"></script>
@@ -78,6 +95,10 @@
   <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
   <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
   <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+
+
+  <script src="https://www.amcharts.com/lib/3/funnel.js"></script>
+
 
 
 </body>

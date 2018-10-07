@@ -184,7 +184,10 @@ app.post('/auth/google', function(req, res) {
         userModel.findOne({ email: profile.email}, function(err, existingUser) {
           if (existingUser) {
 						console.log('existing user');
-            return res.send({ token: createJWT(existingUser) });
+            return res.send(
+							{ token: createJWT(existingUser),
+								user:existingUser
+							});
           }
 					console.log('new user');
           var user = new userModel();
@@ -197,7 +200,10 @@ app.post('/auth/google', function(req, res) {
           user.save(function(err,result) {
             var token = createJWT(user);
 						console.log('result '+jsonSecret);
-            res.send({ token: token });
+            res.send({
+							token: token ,
+							user:result
+					});
           });
         });
       }
@@ -206,7 +212,7 @@ app.post('/auth/google', function(req, res) {
 });
 
 app.get('queries/googleDashboard',function(req,res){
-	res.send('reached here')
+	res.send('Succesfully Logged In')
 })
 
 
@@ -239,9 +245,14 @@ app.post('/auth/facebook', function(req, res) {
         // Step 3. Create a new user account or return an existing one.
         userModel.findOne({ email: profile.email }, function(err, existingUser) {
           if (existingUser) {
+
 						console.log('existing user');
+						console.log(existingUser);
             var token = createJWT(existingUser);
-            return res.send({ token: token });
+            return res.send({
+							token: token ,
+							user:existingUser
+						});
           }
 					console.log('new user');
           var user = new userModel();
@@ -249,10 +260,13 @@ app.post('/auth/facebook', function(req, res) {
 					user.email=profile.email;
 					user.facebook=profile.id;
 
-          user.save(function() {
+          user.save(function(err,result) {
             var token = createJWT(user);
 						console.log('saving');
-            res.send({ token: token });
+            res.send({
+							token: token,
+							user:result
+						 });
           });
         });
       }
@@ -260,7 +274,7 @@ app.post('/auth/facebook', function(req, res) {
   });
 });
 app.get('/facebook/dashboard',function(req,res){
-	res.send('reached here')
+	res.send('Successfully logged in')
 })
 
  app.post('/forgotPassword',function(req,res){

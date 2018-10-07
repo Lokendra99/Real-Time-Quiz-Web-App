@@ -11,34 +11,22 @@
     <button type="button" class="btn btn-danger" ng-click="displayQuestions();startTimerFn()">Accept & Go ahead</button>
   </div>
 </div>
-<!-- <h3>{{testData.testDescription}}</h3> -->
 
-
-
-<!-- <a href="#!testQuestions/{{testData._id}}"> -->
 <div class="container">
   <div class="jumbotron question-styling" ng-show="questionsSection" ng-init="questionNo=1">
     <p class="pull-right">Time:{{timecheck}}</p>
     <div>
       <h3>Question {{questionNo}}- {{singleQuestionData.question}}</h3>
-      <div ng-repeat="option in singleQuestionData.options track by $index"  >
-        <input type="radio" ng-model="choiceCheck.setValue" value="{{$index}}"
-        name="whatever"/> {{option}}
+      <div ng-repeat="option in singleQuestionData.options track by $index">
+        <input type="radio" ng-model="choiceCheck.setValue" value="{{$index}}" name="whatever" /> {{option}}
       </div>
     </div>
     <br>
 
-    <button type="button" name="button"  ng-click="timerForEachAnswer(singleQuestionData._id);
-    pop(singleQuestionData._id)"  ng-show="questionsSection!=totalQuestions" class="btn btn-success pull-left">Next</button>
+    <button type="button" name="button" ng-click="timerForEachAnswer(singleQuestionData._id);
+    pop(singleQuestionData._id)" ng-show="questionsSection!=totalQuestions" class="btn btn-success pull-left">Next</button>
 
-    <a href="#!/result/{{userId}}/{{testId}}"><button type="button" name="button"       ng-show="questionsSection" class="btn btn-danger pull-right">Submit</button>
+    <a href="#!/result/{{userId}}/{{testId}}"><button type="button" name="button" ng-show="questionsSection" class="btn btn-danger pull-right" ng-click="timerForEachAnswer(singleQuestionData._id);stopTimerFromClient()">Submit</button>
     </a>
-  </div>
-</div>
-<div class="container">
-  <div class="jumbotron" ng-show="results">
-    <div >
-      Result:
-    </div>
   </div>
 </div>

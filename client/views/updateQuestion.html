@@ -35,30 +35,30 @@
   </div>
 </nav>
 <div class="container result-display-styling">
-  <div class="jumbotron admin-div-styling ">
+  <div class="jumbotron admin-div-styling">
     <form class="form-horizontal" ng-submit="sentRequest()">
       <div class="form-group">
         <label class="control-label col-sm-2" for="question">Question:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" ng-model="question" id="question" placeholder="Enter Question">
+          <input type="text" class="form-control" ng-value="questionData.question" ng-model="question" id="question" placeholder="Enter Question">
         </div>
       </div>
       <div class="form-group">
         <label class="control-label col-sm-2" for="options">Options</label>
         <div class="col-sm-10">
-          <textarea class="form-control" rows="5" id="options" ng-model="options" placeholder="Enter options sepearted by commas"></textarea>
+          <textarea class="form-control" rows="5" id="options" ng-value="questionData.options" ng-model="options" placeholder="Enter options sepearted by commas"></textarea>
         </div>
       </div>
       <div class="form-group">
         <label class="control-label col-sm-2" for="question">Correct Option:</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" ng-model="answer" id="answer" placeholder="Enter Correct Option by its index value ">
+          <input type="text" class="form-control" ng-value="questionData.answer" ng-model="answer" id="answer" placeholder="Enter Correct Option by its index value ">
         </div>
       </div>
       <div class="form-group">
         <label class="control-label col-sm-2" for="sel1">Set Difficuty of question:</label>
         <div class="col-sm-10">
-          <select class="form-control" ng-model="difficulty" id="sel1">
+          <select class="form-control" ng-value="questionData.difficulty" ng-model="difficulty" id="sel1">
             <option>low</option>
             <option>medium</option>
             <option>high</option>
@@ -68,7 +68,7 @@
       <div class="form-group">
         <label class="control-label col-sm-2" for="sel2">Set Category of question:</label>
         <div class="col-sm-10">
-          <select class="form-control" ng-model="category" id="sel2">
+          <select class="form-control" ng-value="questionData.category" ng-model="category" id="sel2">
             <option>Verbal</option>
             <option>Quants</option>
             <option>Logical</option>
@@ -82,5 +82,4 @@
       </div>
     </form>
   </div>
-
 </div>

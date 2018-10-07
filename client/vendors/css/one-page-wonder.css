@@ -1,18 +1,15 @@
-/*
- * Start Bootstrap - One Page Wonder (http://startbootstrap.com/)
- * Copyright 2013-2016 Start Bootstrap
- * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
- */
+
 
 body {
     margin-top: 50px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
 
+
 .header-image {
     display: block;
     width: 100%;
     text-align: center;
-    background: url('http://placehold.it/1900x500') no-repeat center center scroll;
+    background: linear-gradient(rgba(30, 33, 29, 0.7),rgba(37, 48, 44, 0.7)),url('../images/home-back.jpg') no-repeat center center scroll;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
@@ -22,17 +19,17 @@ body {
 .headline {
     padding: 120px 0;
 }
-
+/*  */
 .headline h1 {
     font-size: 130px;
     background: #fff;
-    background: rgba(255,255,255,0.9);
+    background: rgba(255, 255, 255, 0.61);
 }
 
 .headline h2 {
     font-size: 77px;
     background: #fff;
-    background: rgba(255,255,255,0.9);
+    background: rgba(255, 255, 255, 0.61);
 }
 
 .featurette-divider {
@@ -172,4 +169,13 @@ body {
         margin-bottom: 10px;
         margin-left: 0;
     }
+}
+footer{
+  /* position: fixed; */
+   /* left: 0;
+   bottom: 0;
+   width: 100%; */
+  background-color: #2f2f2f; /* Black Gray */
+  color: #fff;
+  padding: 3%;
 }

@@ -42,7 +42,7 @@ function($routeProvider,$authProvider){
         }
   })
 
-  .when('/forgotPasswrd',{
+  .when('/forgotPassword',{
     templateUrl:'../views/forgotPassword.html',
     controller:'forgotPasswrdCtrl'
   })
@@ -61,69 +61,118 @@ function($routeProvider,$authProvider){
   })
   .when('/result/:userId/:testId',{
     templateUrl:'../views/result.html',
-    controller:'resultCtrl'
-  })
-
-  .when('/testsReportForUser/:userId',{
-    templateUrl:'../views/testsReportForUser.html',
-    controller:'userTestsCtrl'
-  })
-  .when('/dashboard/:userId',{
-    templateUrl:'../views/dashboard.html',
-    controller:'dashboardCtrl',
+    controller:'resultCtrl',
     resolve: {
           loginRequired: loginRequired
         }
   })
+
+  .when('/testsReportForUser/:userId',{
+    templateUrl:'../views/testsReportForUser.html',
+    controller:'userTestsCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
+  })
+  .when('/dashboard/:userId/',{
+    templateUrl:'../views/dashboard.html',
+    controller:'dashboardCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        },
+        resolve: {
+              loginRequired: loginRequired
+            }
+  })
   .when('/createTest',{
     templateUrl:'../views/createTest.html',
-    controller:'createTestCtrl'
+    controller:'createTestCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
   })
 
   .when('/createQuestion',{
     templateUrl:'../views/createQuestion.html',
-    controller:'createQuestionCtrl'
+    controller:'createQuestionCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
   })
   .when('/test/:userId/:id',{
     templateUrl:'../views/test.html',
-    controller:'testCtrl'
+    controller:'testCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
   })
 
   .when('/results',{
     templateUrl:'../views/result.html',
-    controller:'testCtrl'
+    controller:'testCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
   })
 
   .when('/adminTest/:id',{
     templateUrl:'../views/adminTest.html',
-    controller:'adminTestCtrl'
+    controller:'adminTestCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
   })
   .when('/viewUsers',{
     templateUrl:'../views/usersList.html',
-    controller:'adminUserCtrl'
+    controller:'adminUserCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
 
   })
 
   .when('/viewAllTests',{
     templateUrl:'../views/AllTests.html',
-    controller:'adminViewTestsCtrl'
+    controller:'adminViewTestsCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
   })
 
   .when('/viewAllQuestions/:id',{
     templateUrl:'../views/AllQuestions.html',
-    controller:'adminViewQuestionsCtrl'
+    controller:'adminViewQuestionsCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
   })
   .when('/updateTest/:id',{
     templateUrl:'../views/updateTest.html',
-    controller:'updateTestCtrl'
+    controller:'updateTestCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
+  })
+  .when('/updateQuestion/:id',{
+    templateUrl:'../views/updateQuestion.html',
+    controller:'updateQuestionCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
   })
   .when('/deleteTest/:id',{
     templateUrl:'../views/delete.html',
-    controller:'deleteTestCtrl'
+    controller:'deleteTestCtrl',
+    resolve: {
+          loginRequired: loginRequired
+        }
   })
   .when('/overAllUserPerformanceForAdmin/:userId',{
   templateUrl:'../views/overAllUserPerformance.html',
   controller:'performanceCtrlForAdmin',
+  resolve: {
+        loginRequired: loginRequired
+      }
 })
 
 

@@ -1,10 +1,10 @@
 <div class="container">
   <div class="row">
-    <div class="center-form panel">
+    <div class="center-form panel " style="box-shadow: 0 0 5px 5px #cecccc">
       <div class="panel-body">
         <h2 class="text-center">Sign up</h2>
         <form name="signupForm">
-          
+
           <div class="form-group has-feedback">
             <input class="form-control input-lg" type="text" name="displayName" ng-model="user.displayName" placeholder="Name" required autofocus>
             <span class="ion-person form-control-feedback"></span>
@@ -20,15 +20,10 @@
             <span class="ion-key form-control-feedback"></span>
           </div>
 
-          <div class="form-group has-feedback">
-            <input class="form-control input-lg" type="password" name="confirmPassword" ng-model="confirmPassword" placeholder="Confirm Password">
-            <span class="ion-key form-control-feedback"></span>
-          </div>
-
-          <p class="text-center text-muted"><small>By clicking on Sign up, you agree to <a href="#">terms & conditions</a> and <a href="#">privacy policy</a></small></p>
-          <button type="submit"  ng-click="signup()" class="btn btn-lg btn-block btn-primary">Sign up</button>
-          <br/>
-          <p class="text-center text-muted">Already have an account? <a href="#!login">Log in now</a></p>
+          <p class="text-center text-muted font-change"><small>By clicking on Sign up, you agree to <a href="#">terms & conditions</a> and <a href="#">privacy policy</a></small></p>
+          <button type="submit" ng-click="signup()" class="btn btn-lg btn-block btn-primary font-change">Sign up</button>
+          <br />
+          <p class="text-center text-muted font-change">Already have an account? <a href="#!login">Log in now</a></p>
         </form>
       </div>
     </div>

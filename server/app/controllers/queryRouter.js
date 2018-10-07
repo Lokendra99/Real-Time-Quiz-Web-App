@@ -21,8 +21,8 @@ module.exports.controller=function(app,server,passport){
 var io=socketIO(server);
 
  io.on('connection',function(socket){
-   var countdown = 15;
-   var totalTime=15;
+   var countdown = 50;
+   var totalTime=50;
 
    console.log('connection of socket.io on server side');
 
@@ -42,7 +42,13 @@ var io=socketIO(server);
        socket.emit('stopTimer',{countdown:countdown});
        clearInterval(myVar);
      }
+     socket.on('stopTimerWhenUserSubmits',function(resp){
+       console.log('stop by user');
+       clearInterval(myVar);
+     })
+
    });
+
 
    socket.on('timeTakenToAnswerEachQuestionAndOtherDetails',function(answerData){
      answerData.timeTakenByEach=totalTime-countdown;
@@ -146,19 +152,11 @@ var io=socketIO(server);
           //console.log(resultByhere);
         })
 
-        // new Test().save(function(err,response){
-        //   console.log('response try');
-        //   console.log(response);
-        // })
-
         console.log(response);
 
       })
       res.send(responseGenerator.generate(true , responseToBeSent , 200, null ));
 
-
-
-      //console.log('score '+score);
     })
   })
 
@@ -175,10 +173,8 @@ route.post('/createTest',function(req,respond){
     totalScore:req.body.totalScore
   })
   var DescriptionArr=req.body.testDescription;
-  //DescriptionArr.push(req.body.testDescription);
-  //console.log(DescriptionArr);
-DescriptionArr=DescriptionArr.split(',');
-console.log(DescriptionArr);
+  DescriptionArr=DescriptionArr.split(',');
+  console.log(DescriptionArr);
     newTest.testDescription=DescriptionArr;
 
     var questionIdArray=[];
@@ -292,7 +288,7 @@ route.post('/updateTest/:testId',function(req,res){
   Test.findOneAndUpdate({_id:req.params.testId},update,function(err,result){
     if(err)console.log(result);
     else{
-       //check if it can be done through mongodb query
+
        var response = responseGenerator.generate(true , result , 200, null );
        res.send(response);
     }
@@ -359,7 +355,7 @@ route.get('/viewQuestion/:questionId',function(req,res){
   Question.find({_id:req.params.questionId},function(err,result){
     if(err)console.log(result);
     else{
-      console.log(result);
+      res.send(result);
     }
   })
 })
@@ -368,15 +364,15 @@ route.post('/updateQuestion/:questionId',function(req,res){
   Question.findOneAndUpdate({_id:req.params.questionId},update,function(err,result){
     if(err)console.log(result);
     else{
-      console.log(result);
+      res.send(result);
     }
   })
 })
 route.get('/deleteQuestion/:questionId',function(req,res){
   Question.remove({_id:req.params.questionId},function(err,result){
-    if(err)console.log(result);
+    if(err)console.log(err);
     else{
-      console.log(result);
+      res.send(result)
     }
   })
 })
@@ -401,19 +397,17 @@ route.post('/answer/:questionId',function(req,res){
 
 
 route.post('/checkAnswer/:testId',function(req,res){
-  //console.log(req.params.testId);
+
   var questionId=[];
   var correctAnswerArr=req.body;
-  //console.log('req body ');
-  //console.log(req.body);
+
 
   var count=null;
 
   Test.findOne({_id:req.params.testId},function(err,result){
     if(err){console.log(err);}
     else{
-      //console.log(result);
-      //console.log(result.questions);
+
       Answer.find({'questionId':{"$in":result.questions}},{_id:0},function(error,response){
         if(err){console.log(err);}
         else{
@@ -433,7 +427,7 @@ route.post('/checkAnswer/:testId',function(req,res){
       })
     }
   })
-  //correctAnswerArr.questionId.forEach(function(obj){obj})
+
    console.log(correctAnswerArr);
 
 
@@ -455,9 +449,13 @@ route.get('/testSpecificPerformanceForAdmin/:userId/:testId',function(req,res){
 
       {$match:{userId:req.params.userId,testId:req.params.testId}}
 
-    ],function(request,result){
-	 })
-	res.send(result);
+    ],function(request,response){
+      console.log('Response');
+      console.log(response);
+      res.send(response)
+
+ })
+
 })
  app.use('/queries',route);
 }
